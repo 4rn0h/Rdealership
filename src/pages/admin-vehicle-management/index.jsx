@@ -131,7 +131,7 @@ const AdminVehicleManagement = () => {
 
   // Check admin authentication
   useEffect(() => {
-    const user = localStorage.getItem('luxauto_user');
+    const user = localStorage.getItem('RoyaMotorsUk_user');
     if (!user) {
       navigate('/user-authentication');
       return;

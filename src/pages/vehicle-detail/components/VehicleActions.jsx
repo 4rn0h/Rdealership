@@ -63,7 +63,7 @@ const VehicleActions = ({ vehicleId, vehicleName, isFavorite, onToggleFavorite, 
 
   const handleShare = (platform) => {
     const url = window.location?.href;
-    const text = `Check out this ${vehicleName} on LuxAuto Kenya`;
+    const text = `Check out this ${vehicleName} on RoyaMotorsUk Kenya`;
     
     const shareUrls = {
       facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,

@@ -18,7 +18,7 @@ const UserAuthentication = () => {
 
   // Check if user is already authenticated
   useEffect(() => {
-    const existingUser = localStorage.getItem('luxauto_user');
+    const existingUser = localStorage.getItem('RoyaMotorsUk_user');
     if (existingUser) {
       const userData = JSON.parse(existingUser);
       // Redirect based on role
@@ -72,9 +72,9 @@ const UserAuthentication = () => {
   return (
     <>
       <Helmet>
-        <title>Sign In | LuxAuto Kenya - Premium Vehicle Authentication</title>
-        <meta name="description" content="Sign in to your LuxAuto Kenya account to access personalized features, save favorites, and manage vehicle inquiries. Secure authentication for premium automotive experience." />
-        <meta name="keywords" content="LuxAuto login, Kenya car dealership, vehicle authentication, luxury cars signin" />
+        <title>Sign In | RoyaMotorsUk Kenya - Premium Vehicle Authentication</title>
+        <meta name="description" content="Sign in to your RoyaMotorsUk Kenya account to access personalized features, save favorites, and manage vehicle inquiries. Secure authentication for premium automotive experience." />
+        <meta name="keywords" content="RoyaMotorsUk login, Kenya car dealership, vehicle authentication, luxury cars signin" />
       </Helmet>
 
       <div className="min-h-screen bg-background">
@@ -92,7 +92,7 @@ const UserAuthentication = () => {
               <div className="w-8 h-8 bg-luxury-gradient rounded-lg flex items-center justify-center">
                 <Icon name="Car" size={20} color="#F5F5F5" />
               </div>
-              <span className="font-heading font-bold text-foreground">LuxAuto</span>
+              <span className="font-heading font-bold text-foreground">RoyaMotorsUk</span>
             </div>
             
             <div className="w-10"></div>
@@ -111,7 +111,7 @@ const UserAuthentication = () => {
                   </div>
                   <div>
                     <h1 className="text-2xl font-heading font-bold text-foreground">
-                      LuxAuto
+                      RoyaMotorsUk
                     </h1>
                     <p className="text-sm font-caption text-muted-foreground -mt-1">
                       Kenya
@@ -179,7 +179,7 @@ const UserAuthentication = () => {
                   <div className="flex items-center space-x-2">
                     <Icon name="Mail" size={14} className="text-accent" />
                     <span className="text-xs text-muted-foreground">
-                      support@luxauto.com
+                      support@RoyaMotorsUk.com
                     </span>
                   </div>
                   <div className="flex items-center space-x-2">

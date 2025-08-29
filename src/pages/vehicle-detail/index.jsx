@@ -241,17 +241,17 @@ const VehicleDetail = () => {
     loadVehicleData();
 
     // Check authentication status
-    const user = localStorage.getItem('luxauto_user');
+    const user = localStorage.getItem('RoyaMotorsUk_user');
     setIsAuthenticated(!!user);
 
     // Check if vehicle is in favorites
-    const favorites = JSON.parse(localStorage.getItem('luxauto_favorites') || '[]');
+    const favorites = JSON.parse(localStorage.getItem('RoyaMotorsUk_favorites') || '[]');
     setIsFavorite(favorites?.includes(vehicleId));
 
     // Track vehicle view
-    const viewHistory = JSON.parse(localStorage.getItem('luxauto_view_history') || '[]');
+    const viewHistory = JSON.parse(localStorage.getItem('RoyaMotorsUk_view_history') || '[]');
     const updatedHistory = [vehicleId, ...viewHistory?.filter(id => id !== vehicleId)]?.slice(0, 10);
-    localStorage.setItem('luxauto_view_history', JSON.stringify(updatedHistory));
+    localStorage.setItem('RoyaMotorsUk_view_history', JSON.stringify(updatedHistory));
   }, [vehicleId]);
 
   const handleToggleFavorite = () => {
@@ -260,7 +260,7 @@ const VehicleDetail = () => {
       return;
     }
 
-    const favorites = JSON.parse(localStorage.getItem('luxauto_favorites') || '[]');
+    const favorites = JSON.parse(localStorage.getItem('RoyaMotorsUk_favorites') || '[]');
     let updatedFavorites;
 
     if (isFavorite) {
@@ -269,7 +269,7 @@ const VehicleDetail = () => {
       updatedFavorites = [...favorites, vehicleId];
     }
 
-    localStorage.setItem('luxauto_favorites', JSON.stringify(updatedFavorites));
+    localStorage.setItem('RoyaMotorsUk_favorites', JSON.stringify(updatedFavorites));
     setIsFavorite(!isFavorite);
   };
 
@@ -492,7 +492,7 @@ const VehicleDetail = () => {
                     <Icon name="Mail" size={18} className="text-accent" />
                     <div>
                       <p className="text-sm text-muted-foreground">Email</p>
-                      <p className="font-medium text-foreground">sales@luxauto.co.ke</p>
+                      <p className="font-medium text-foreground">sales@RoyaMotorsUk.co.ke</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-3">

@@ -98,7 +98,7 @@ const UserDashboard = () => {
       },
       date: "2025-01-15",
       time: "14:00",
-      location: "LuxAuto Showroom, Westlands, Nairobi",
+      location: "RoyaMotorsUk Showroom, Westlands, Nairobi",
       salesAgent: "James Mwangi",
       status: "confirmed"
     },
@@ -111,7 +111,7 @@ const UserDashboard = () => {
       },
       date: "2025-01-18",
       time: "10:30",
-      location: "LuxAuto Showroom, Karen, Nairobi",
+      location: "RoyaMotorsUk Showroom, Karen, Nairobi",
       salesAgent: "Sarah Wanjiku",
       status: "scheduled"
     }

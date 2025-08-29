@@ -12,7 +12,7 @@ const Header = () => {
 
   // Mock user authentication state
   useEffect(() => {
-    const mockUser = localStorage.getItem('luxauto_user');
+    const mockUser = localStorage.getItem('RoyaMotorsUk_user');
     if (mockUser) {
       setUser(JSON.parse(mockUser));
     }
@@ -52,7 +52,7 @@ const Header = () => {
 
   const handleAuthAction = () => {
     if (user) {
-      localStorage.removeItem('luxauto_user');
+      localStorage.removeItem('RoyaMotorsUk_user');
       setUser(null);
       navigate('/');
     } else {
@@ -89,7 +89,7 @@ const Header = () => {
             </div>
             <div className="hidden sm:block">
               <h1 className="text-xl font-heading font-bold text-foreground">
-                LuxAuto
+                RoyaMotorsUk
               </h1>
               <p className="text-xs font-caption text-muted-foreground -mt-1">
                 Kenya

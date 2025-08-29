@@ -17,9 +17,9 @@ const LoginForm = ({ onForgotPassword, onSuccess }) => {
 
   // Mock credentials for different user types
   const mockCredentials = {
-    'admin@luxauto.com': { password: 'admin123', role: 'admin', name: 'Admin User' },
-    'agent@luxauto.com': { password: 'agent123', role: 'agent', name: 'Sales Agent' },
-    'user@luxauto.com': { password: 'user123', role: 'user', name: 'John Doe' }
+    'admin@RoyaMotorsUk.com': { password: 'admin123', role: 'admin', name: 'Admin User' },
+    'agent@RoyaMotorsUk.com': { password: 'agent123', role: 'agent', name: 'Sales Agent' },
+    'user@RoyaMotorsUk.com': { password: 'user123', role: 'user', name: 'John Doe' }
   };
 
   const validateForm = () => {
@@ -69,7 +69,7 @@ const LoginForm = ({ onForgotPassword, onSuccess }) => {
       const mockUser = mockCredentials?.[formData?.email];
       if (!mockUser || mockUser?.password !== formData?.password) {
         setErrors({ 
-          general: 'Invalid email or password. Try: admin@luxauto.com / admin123, agent@luxauto.com / agent123, or user@luxauto.com / user123' 
+          general: 'Invalid email or password. Try: admin@RoyaMotorsUk.com / admin123, agent@RoyaMotorsUk.com / agent123, or user@RoyaMotorsUk.com / user123' 
         });
         return;
       }
@@ -82,7 +82,7 @@ const LoginForm = ({ onForgotPassword, onSuccess }) => {
         loginTime: new Date()?.toISOString()
       };
       
-      localStorage.setItem('luxauto_user', JSON.stringify(userData));
+      localStorage.setItem('RoyaMotorsUk_user', JSON.stringify(userData));
       
       // Success callback
       if (onSuccess) {

@@ -239,7 +239,7 @@ const VehicleBrowseSearch = () => {
 
   // Load favorites from localStorage
   useEffect(() => {
-    const savedFavorites = localStorage.getItem('luxauto_favorites');
+    const savedFavorites = localStorage.getItem('RoyaMotorsUk_favorites');
     if (savedFavorites) {
       setFavoriteVehicles(JSON.parse(savedFavorites));
     }
@@ -416,7 +416,7 @@ const VehicleBrowseSearch = () => {
 
   // Handle favorite toggle
   const handleFavoriteToggle = (vehicleId) => {
-    const user = localStorage.getItem('luxauto_user');
+    const user = localStorage.getItem('RoyaMotorsUk_user');
     if (!user) {
       navigate('/user-authentication');
       return;
@@ -427,7 +427,7 @@ const VehicleBrowseSearch = () => {
       : [...favoriteVehicles, vehicleId];
     
     setFavoriteVehicles(newFavorites);
-    localStorage.setItem('luxauto_favorites', JSON.stringify(newFavorites));
+    localStorage.setItem('RoyaMotorsUk_favorites', JSON.stringify(newFavorites));
   };
 
   // Handle pull to refresh

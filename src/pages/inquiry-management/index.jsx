@@ -49,7 +49,7 @@ const InquiryManagement = () => {
         lastActivity: new Date('2025-01-09T11:20:00'),
         agent: {
           name: "Sarah Johnson",
-          email: "sarah.johnson@luxauto.co.ke"
+          email: "sarah.johnson@RoyaMotorsUk.co.ke"
         },
         response: "Thank you for your interest! The S500 offers excellent fuel efficiency with an average of 8.5L/100km in combined driving. It comes equipped with the latest Mercedes-Benz Intelligent Drive package including adaptive cruise control, lane keeping assist, and automatic emergency braking. Would you like to schedule a test drive to experience these features firsthand?",
         responseDate: new Date('2025-01-09T11:20:00')
@@ -66,7 +66,7 @@ const InquiryManagement = () => {
         lastActivity: new Date('2025-01-11T10:30:00'),
         agent: {
           name: "Michael Chen",
-          email: "michael.chen@luxauto.co.ke"
+          email: "michael.chen@RoyaMotorsUk.co.ke"
         },
         response: "Yes, this Q8 is still available! It features Audi's renowned Quattro all-wheel drive system, perfect for both city driving and off-road adventures. I've scheduled a test drive for you this Saturday. Looking forward to showing you this exceptional vehicle!",
         responseDate: new Date('2025-01-11T10:30:00')
@@ -83,14 +83,14 @@ const InquiryManagement = () => {
         scheduledDate: new Date('2025-01-18T10:00:00'),
         status: "confirmed",
         location: {
-          name: "LuxAuto Showroom Westlands",
+          name: "RoyaMotorsUk Showroom Westlands",
           address: "Westlands Road, Nairobi",
           coordinates: { lat: -1.2634, lng: 36.8155 }
         },
         agent: {
           name: "Michael Chen",
           phone: "+254 712 345 678",
-          email: "michael.chen@luxauto.co.ke"
+          email: "michael.chen@RoyaMotorsUk.co.ke"
         },
         notes: "Customer specifically interested in off-road capabilities and interior luxury features."
       },
@@ -103,14 +103,14 @@ const InquiryManagement = () => {
         scheduledDate: new Date('2025-01-15T14:30:00'),
         status: "completed",
         location: {
-          name: "LuxAuto Showroom Karen",
+          name: "RoyaMotorsUk Showroom Karen",
           address: "Karen Shopping Centre, Nairobi",
           coordinates: { lat: -1.3197, lng: 36.7073 }
         },
         agent: {
           name: "Sarah Johnson",
           phone: "+254 723 456 789",
-          email: "sarah.johnson@luxauto.co.ke"
+          email: "sarah.johnson@RoyaMotorsUk.co.ke"
         },
         notes: "Test drive completed successfully. Customer very impressed with performance."
       }

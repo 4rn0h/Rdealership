@@ -40,7 +40,7 @@ const SocialAuth = ({ onSuccess }) => {
         loginTime: new Date()?.toISOString()
       };
       
-      localStorage.setItem('luxauto_user', JSON.stringify(userData));
+      localStorage.setItem('RoyaMotorsUk_user', JSON.stringify(userData));
       
       if (onSuccess) {
         onSuccess(userData);

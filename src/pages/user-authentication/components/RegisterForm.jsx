@@ -115,7 +115,7 @@ const RegisterForm = ({ onSuccess }) => {
       };
       
       // Store user data
-      localStorage.setItem('luxauto_user', JSON.stringify(userData));
+      localStorage.setItem('RoyaMotorsUk_user', JSON.stringify(userData));
       
       // Success callback
       if (onSuccess) {
