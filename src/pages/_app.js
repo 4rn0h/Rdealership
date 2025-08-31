@@ -24,8 +24,9 @@ import CallToAction from "./home/components/CallToAction";
 function Layout({ children }) {
   const location = useLocation();
 
-  // Show CTA only on home ("/") and about ("/about")
-  const showCTA = location.pathname === "/" || location.pathname === "/about";
+  // ✅ CTA only on home and about pages
+  const showCTA =
+    location.pathname === "/" || location.pathname === "/about";
 
   return (
     <div className="flex flex-col min-h-screen">

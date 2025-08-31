@@ -179,7 +179,7 @@ const UserAuthentication = () => {
                   <div className="flex items-center space-x-2">
                     <Icon name="Mail" size={14} className="text-accent" />
                     <span className="text-xs text-muted-foreground">
-                      support@RoyaMotorsUk.com
+                      support@Royamotorsuk.com
                     </span>
                   </div>
                   <div className="flex items-center space-x-2">

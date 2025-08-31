@@ -17,9 +17,9 @@ const LoginForm = ({ onForgotPassword, onSuccess }) => {
 
   // Mock credentials for different user types
   const mockCredentials = {
-    'admin@RoyaMotorsUk.com': { password: 'admin123', role: 'admin', name: 'Admin User' },
-    'agent@RoyaMotorsUk.com': { password: 'agent123', role: 'agent', name: 'Sales Agent' },
-    'user@RoyaMotorsUk.com': { password: 'user123', role: 'user', name: 'John Doe' }
+    'admin@Royamotorsuk.com': { password: 'admin123', role: 'admin', name: 'Admin User' },
+    'agent@Royamotorsuk.com': { password: 'agent123', role: 'agent', name: 'Sales Agent' },
+    'user@Royamotorsuk.com': { password: 'user123', role: 'user', name: 'John Doe' }
   };
 
   const validateForm = () => {

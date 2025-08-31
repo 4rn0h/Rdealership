@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import Hero from "./components/Hero";
 import FeaturedCars from "./components/FeaturedCars";
 import WhyChooseUs from "./components/WhyChooseUs";
+import CallToAction from "./components/CallToAction";
 
 export default function Home() {
   useEffect(() => {
@@ -77,7 +78,7 @@ export default function Home() {
             {/* Right Content (Image + Stats) */}
             <div className="bg-white p-6 rounded-lg shadow-lg">
               <img
-                src="https://images.pexels.com/photos/164634/pexels-photo-164634.jpeg"
+                src="/assets/images/WhyRoya.jpeg"
                 alt="Luxury car shipping"
                 className="w-full h-auto rounded-lg"
               />
@@ -100,7 +101,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      {/* CTA removed here */}
+      <CallToAction />
     </div>
   );
 }

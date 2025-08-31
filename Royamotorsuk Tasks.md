@@ -1,6 +1,10 @@
 ## To be completed
  -Scan the the project and understand the code, add this screens
     -Favourites management, Sales Agent dashboard
+    -Switch from Navbar to Header for all the pages, with contents from NavBar
+    -WhyChooseUs not showing on the homepage
+    -also update your Home page the same way (removing its local CallToAction import), so _app.js is the single source of truth for CTA placement?
+
 
 
 ## Completed
@@ -13,6 +17,15 @@
    repo-https://github.com/4rn0h/royamotorsuk_app/tree/master/rmotors_frontend
 -All image links change to use placeholders. il upload local images for the missing pages
 -change Login credentials to @royamotorsuk.com, pswd can stay the same for app's functional experience. admin@luxauto.com: admin123 agent@luxauto.com: agent123 user@luxauto.com: user123 david.kimani@email.com: (role-based access)
+
+### To be Improved On
+-homepage CallToAction to be just above the footer
+-login/logout working
+-Clear and consistent data all through
+-separate Hero Images & texts intervals
+
+
+
 
 ## Clarity on how to go about this
 This project is using supabase and already connected

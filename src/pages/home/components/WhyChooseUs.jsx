@@ -1,41 +1,52 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Mail, ArrowRight } from 'lucide-react';
+import React from "react";
+import { Award, ShieldCheck, Truck, UserCheck } from "lucide-react";
 
-export default function CallToAction() {
+function Feature({ icon, title, description }) {
   return (
-    <section className="section bg-secondary">
+    <div className="flex flex-col items-center text-center p-6 rounded-lg transition-all duration-300 hover:shadow-lg bg-neutral">
+      <div className="bg-accent/10 text-accent p-4 rounded-full mb-4">{icon}</div>
+      <h3 className="text-xl font-medium mb-3 text-primary">{title}</h3>
+      <p className="text-primary">{description}</p>
+    </div>
+  );
+}
+
+export default function WhyChooseUs() {
+  return (
+    <section className="section bg-muted">
       <div className="container-custom">
-        <div className="bg-gradient-to-r from-primary to-secondary p-8 md:p-12 rounded-lg text-white text-center">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-heading font-medium mb-4">
-              Ready to Experience Luxury?
-            </h2>
-            <p className="text-gray-200 mb-8">
-              Discover our exceptional collection of premium vehicles or contact our team
-              for personalized assistance with your luxury automotive needs.
-            </p>
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <h2 className="text-4xl font-heading font-medium mb-4 text-primary">
+            Why Choose RoyaMotorsUK
+          </h2>
+          <p className="text-primary">
+            We are committed to providing an exceptional experience for our
+            clients in Kenya and Tanzania, offering the finest vehicles with
+            unparalleled service.
+          </p>
+        </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Link to="/contact" className="bg-white/10 hover:bg-white/20 transition-all py-4 px-6 rounded-lg flex items-center justify-center space-x-3">
-                <span>Ask Roya</span>
-                <ArrowRight size={18} />
-              </Link>
-
-              <Link to="/cars" className="bg-accent text-primary hover:bg-accent/90 transition-all py-4 px-6 rounded-lg flex items-center justify-center space-x-3">
-                <span>Explore Collections</span>
-                <ArrowRight size={18} />
-              </Link>
-
-              <a
-                href="mailto:info@royamotorsuk.com"
-                className="bg-white/10 hover:bg-white/20 transition-all py-4 px-6 rounded-lg flex items-center justify-center space-x-3"
-              >
-                <Mail size={18} />
-                <span>Email Us</span>
-              </a>
-            </div>
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <Feature
+            icon={<Award size={28} />}
+            title="Premium Selection"
+            description="We source only the finest luxury vehicles from the UK, each meticulously inspected to ensure exceptional quality."
+          />
+          <Feature
+            icon={<ShieldCheck size={28} />}
+            title="Secure Transactions"
+            description="Our transparent process ensures your investment is protected, with secure payment options and full documentation."
+          />
+          <Feature
+            icon={<Truck size={28} />}
+            title="Complete Logistics"
+            description="We handle all shipping, customs clearance, and delivery directly to your location in Kenya or Tanzania."
+          />
+          <Feature
+            icon={<UserCheck size={28} />}
+            title="Personalized Service"
+            description="Our dedicated team provides tailored assistance throughout your journey, ensuring your complete satisfaction."
+          />
         </div>
       </div>
     </section>
