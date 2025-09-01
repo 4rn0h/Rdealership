@@ -18,12 +18,12 @@ export default function Home() {
       {/* UK to East Africa Section */}
       <div className="bg-neutral py-16 md:py-24">
         <div className="container-custom">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {/* Left Content */}
-            <div>
-              <h2 className="text-3xl md:text-4xl font-heading font-medium mb-6 text-primary">
-                From the UK to East Africa: <br />
-                <span className="text-accent">A Seamless Experience</span>
+            <div className="flex flex-col justify-center">
+              <h2 className="text-3xl md:text-4xl font-heading font-medium mb-6 text-primary leading-snug">
+                From the UK to East Africa:{" "}
+                <span className="block text-accent">A Seamless Experience</span>
               </h2>
               <p className="text-gray-700 mb-6">
                 At RoyaMotorsUK, we specialize in connecting discerning clients
@@ -76,31 +76,34 @@ export default function Home() {
             </div>
 
             {/* Right Content (Image + Stats) */}
-            <div className="bg-white p-6 rounded-lg shadow-lg">
-              <img
-                src="/assets/images/WhyRoya.jpeg"
-                alt="Luxury car shipping"
-                className="w-full h-auto rounded-lg"
-              />
+            <div className="flex flex-col justify-center">
+              <div className="bg-white p-6 rounded-lg shadow-lg">
+                <img
+                  src="/assets/images/WhyRoya.jpeg"
+                  alt="Luxury car shipping"
+                  className="w-full h-auto rounded-lg"
+                />
 
-              <div className="mt-6 flex flex-col sm:flex-row gap-4">
-                <div className="flex-1 border-l-4 border-accent pl-4">
-                  <p className="text-4xl font-bold text-primary">100%</p>
-                  <p className="text-gray-600 text-primary">
-                    Secure Transactions
-                  </p>
-                </div>
-                <div className="flex-1 border-l-4 border-accent pl-4">
-                  <p className="text-4xl font-bold text-primary">250+</p>
-                  <p className="text-gray-600 text-primary">
-                    Satisfied Clients
-                  </p>
+                <div className="mt-6 flex flex-col sm:flex-row gap-4">
+                  <div className="flex-1 border-l-4 border-accent pl-4">
+                    <p className="text-4xl font-bold text-primary">100%</p>
+                    <p className="text-gray-600 text-primary">
+                      Secure Transactions
+                    </p>
+                  </div>
+                  <div className="flex-1 border-l-4 border-accent pl-4">
+                    <p className="text-4xl font-bold text-primary">250+</p>
+                    <p className="text-gray-600 text-primary">
+                      Satisfied Clients
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
       <CallToAction />
     </div>
   );

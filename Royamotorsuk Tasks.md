@@ -1,15 +1,15 @@
 ## To be completed
  -Scan the the project and understand the code, add this screens
     -Favourites management, Sales Agent dashboard
-    -Switch from Navbar to Header for all the pages, with contents from NavBar
-    -WhyChooseUs not showing on the homepage
+    -Switch from Navbar to Header for all the pages, with contents from NavBar - Done
+    -WhyChooseUs not showing on the homepage - Done
     -also update your Home page the same way (removing its local CallToAction import), so _app.js is the single source of truth for CTA placement?
 
 
 
 ## Completed
  -change everywhere where luxauto is mentioned to RoyaMotorsUk
- -add a navbar with page links(rearranged) Home(missing), Collection(available), {RoyaMotorsUk-brand name to be in the middle} About(missing), contacts, SignUp/Login-Use an icon for this
+ -add a navbar with page links(rearranged) Home(missing), Collection(available), {RoyaMotorsUk-brand name to be in the middle} About(missing), contacts, SignUp/Login-Use an icon for this - Done
 
 ## Contents
 -get content and style from the below links
@@ -19,10 +19,13 @@
 -change Login credentials to @royamotorsuk.com, pswd can stay the same for app's functional experience. admin@luxauto.com: admin123 agent@luxauto.com: agent123 user@luxauto.com: user123 david.kimani@email.com: (role-based access)
 
 ### To be Improved On
--homepage CallToAction to be just above the footer
--login/logout working
+-homepage CallToAction to be just above the footer - Done
+-login/logout working - Done
+
+
 -Clear and consistent data all through
 -separate Hero Images & texts intervals
+-Royamotorsuk to be same color as phone cta
 
 
 

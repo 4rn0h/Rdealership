@@ -20,7 +20,7 @@ const Footer = () => {
         <div>
           <div className="flex items-center gap-2 mb-4">
             <FaCar className="text-red-500 text-3xl" />
-            <h2 className="text-xl font-serif font-bold">RoyaMotorsUK</h2>
+            <h2 className="text-xl font-serif font-bold">ROYAMOTORSUK</h2>
           </div>
           <p className="text-gray-400 mb-4">
             Luxury automotive excellence delivering exceptional vehicles from
@@ -28,13 +28,13 @@ const Footer = () => {
             detail.
           </p>
           <div className="flex gap-4 text-gray-400">
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+            <a href="https://instagram.com/RoyaMotorsUK" target="_blank" rel="noopener noreferrer">
               <FaInstagram className="hover:text-red-500 cursor-pointer" />
             </a>
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+            <a href="https://facebook.com/RoyaMotorsUK" target="_blank" rel="noopener noreferrer">
               <FaFacebook className="hover:text-red-500 cursor-pointer" />
             </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+            <a href="https://twitter.com/RoyaMotorsUK" target="_blank" rel="noopener noreferrer">
               <FaTwitter className="hover:text-red-500 cursor-pointer" />
             </a>
           </div>

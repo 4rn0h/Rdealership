@@ -19,6 +19,8 @@ import InquiryManagement from "pages/inquiry-management";
 import AdminVehicleManagement from "pages/admin-vehicle-management";
 import UserDashboard from "pages/user-dashboard";
 import VehicleDetail from "pages/vehicle-detail";
+import Terms from "pages/terms";
+import PrivacyPolicy from "pages/privacy-policy";
 
 const Routes = () => {
   return (
@@ -27,7 +29,7 @@ const Routes = () => {
         <ScrollToTop />
 
         <RouterRoutes>
-          {/* Public Routes (with Navbar + Footer) */}
+          {/* Public Routes (with Header + Footer) */}
           <Route
             path="/"
             element={
@@ -93,7 +95,7 @@ const Routes = () => {
             }
           />
 
-          {/* Auth Routes (no Navbar/Footer) */}
+          {/* Auth Routes (no Header/Footer) */}
           <Route
             path="/user-authentication"
             element={
