@@ -173,9 +173,9 @@ export default function TermsPage() {
             <ul>
               <li>Email: legal@royamotorsuk.com</li>
               <li>
-                Address: 123 Luxury Lane, London, UK, SW1A 1AA
+                Address: 39 Kinross drive, Bletchley, Milton Keynes, MK3 7UF
               </li>
-              <li>Phone: +44 123 456 7890</li>
+              <li>Phone: +44 7964 595923</li>
             </ul>
           </div>
         </div>

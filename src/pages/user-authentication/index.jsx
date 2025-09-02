@@ -111,11 +111,8 @@ const UserAuthentication = () => {
                   </div>
                   <div>
                     <h1 className="text-2xl font-heading font-bold text-foreground">
-                      RoyaMotorsUk
+                      ROYAMOTORSUk
                     </h1>
-                    <p className="text-sm font-caption text-muted-foreground -mt-1">
-                      Kenya
-                    </p>
                   </div>
                 </div>
                 <p className="text-muted-foreground text-sm">
@@ -155,7 +152,7 @@ const UserAuthentication = () => {
             <div className="space-y-6">
               <div className="text-center">
                 <h2 className="text-xl font-heading font-semibold text-foreground mb-2">
-                  Join East Africa's Premier Luxury Car Community
+                  Join Our East Africa's Premier Luxury Car Community
                 </h2>
                 <p className="text-muted-foreground text-sm">
                   Experience the finest in automotive excellence with personalized service and exclusive access to premium vehicles.
@@ -173,7 +170,7 @@ const UserAuthentication = () => {
                   <div className="flex items-center space-x-2">
                     <Icon name="Phone" size={14} className="text-accent" />
                     <span className="text-xs text-muted-foreground">
-                      +254 700 123 456
+                      +44 7964 595923
                     </span>
                   </div>
                   <div className="flex items-center space-x-2">
