@@ -6,6 +6,9 @@ package-lock.json
 .vscode/
 .idea/
 vite.config.*s.*
+.env
+
+Navbar.jsx
 
 Homepage code samples for review.txt
 Homepage updates.txt

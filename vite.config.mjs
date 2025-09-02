@@ -15,7 +15,7 @@ export default defineConfig({
     port: 4028, // ✅ number not string
     host: "0.0.0.0",
     strictPort: true,
-    allowedHosts: [".amazonaws.com", ".builtwithrocket.new"],
+    allowedHosts: [".amazonaws.com"],
   },
   resolve: {
     alias: {
