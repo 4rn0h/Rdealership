@@ -275,7 +275,7 @@ const VehicleDetail = () => {
 
   const breadcrumbItems = [
     { label: 'Home', path: '/' },
-    { label: 'Browse Vehicles', path: '/vehicle-browse-search' },
+    { label: 'Our Collection', path: '/vehicle-browse-search' },
     { label: `${vehicle?.year || ''} ${vehicle?.make || ''} ${vehicle?.model || ''}`, path: null }
   ];
 

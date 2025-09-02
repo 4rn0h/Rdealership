@@ -24,7 +24,7 @@ import CallToAction from "./home/components/CallToAction";
 function Layout({ children }) {
   const location = useLocation();
 
-  // ✅ CTA only on home and about pages
+  // CTA only on home and about pages
   const showCTA =
     location.pathname === "/" || location.pathname === "/about";
 
