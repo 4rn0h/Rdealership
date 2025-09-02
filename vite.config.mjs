@@ -7,8 +7,8 @@ import path from "path"; // ✅ missing import
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
-    outDir: "build",
-    chunkSizeWarningLimit: 2000,
+    outDir: "dist",
+    chunkSizeWarningLimit: 3000,
   },
   plugins: [tsconfigPaths(), react(), tagger()],
   server: {

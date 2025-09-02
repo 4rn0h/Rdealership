@@ -22,7 +22,7 @@ export default function Hero() {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [fadeState, setFadeState] = useState("fade-in");
 
-  // Image rotation
+  // Rotate background images
   useEffect(() => {
     const imageInterval = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
@@ -30,7 +30,7 @@ export default function Hero() {
     return () => clearInterval(imageInterval);
   }, []);
 
-  // Text rotation with fade effect
+  // Rotate texts with slide-in
   useEffect(() => {
     const textInterval = setInterval(() => {
       setFadeState("fade-out");
@@ -43,7 +43,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <div className="relative h-screen flex flex-col items-center justify-center text-center">
+    <div className="relative h-screen flex flex-col items-center justify-end text-center overflow-hidden pb-32 md:pb-40">
       {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000"
@@ -55,7 +55,11 @@ export default function Hero() {
       {/* Hero Text */}
       <div className="relative z-10 px-6">
         <p
-          className={`text-xl md:text-2xl font-semibold text-gray-200 mb-8 leading-relaxed max-w-2xl mx-auto transition-opacity duration-500 ${fadeState}`}
+          className={`text-xl md:text-2xl font-semibold text-gray-200 mb-8 leading-relaxed max-w-2xl mx-auto transition-all duration-700 ease-out ${
+            fadeState === "fade-in"
+              ? "opacity-100 translate-x-0"
+              : "opacity-0 -translate-x-10"
+          }`}
         >
           {heroTexts[currentTextIndex]}
         </p>
@@ -64,7 +68,7 @@ export default function Hero() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             to="/vehicle-browse-search"
-            className="btn bg-red-600 hover:bg-red-700 text-white flex items-center justify-center"
+            className="btn border-2 border-red-600 bg-red-600 hover:bg-red-700 hover:border-red-700 text-white flex items-center justify-center px-6 py-3 rounded-lg transition-all duration-300"
           >
             Explore Collection
             <ChevronRight size={20} className="ml-2" />
