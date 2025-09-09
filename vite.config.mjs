@@ -8,7 +8,7 @@ import path from "path"; //
 export default defineConfig({
   build: {
     outDir: "dist",
-    chunkSizeWarningLimit: 3000,
+    chunkSizeWarningLimit: 5000,
   },
   plugins: [tsconfigPaths(), react(), tagger()],
   server: {

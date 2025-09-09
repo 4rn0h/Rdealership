@@ -3,8 +3,8 @@ import { Award, ShieldCheck, Truck, UserCheck } from "lucide-react";
 
 function Feature({ icon, title, description }) {
   return (
-    <div className="flex flex-col items-center text-center p-8 rounded-2xl bg-card border border-border shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-      <div className="bg-accent/20 text-accent p-5 rounded-full mb-6">
+    <div className="group flex flex-col items-center text-center p-8 rounded-2xl bg-card border border-border luxury-shadow-subtle hover:luxury-shadow-medium luxury-transition hover:-translate-y-1">
+      <div className="bg-accent/20 text-accent p-5 rounded-full mb-6 luxury-transition group-hover:bg-accent/30">
         {icon}
       </div>
       <h3 className="text-xl font-heading font-semibold mb-3 text-primary">

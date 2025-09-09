@@ -13,6 +13,22 @@ A modern React-based project utilizing the latest frontend technologies and tool
 - **Form Management** - React Hook Form for efficient form handling
 - **Animation** - Framer Motion for smooth UI animations
 - **Testing** - Jest and React Testing Library setup
+## Key Additions to vehicles details page
+**Dynamic Vehicles Data**:
+  - Centralized `vehiclesData.jsx` for flat vehicle records
+  - Separate `vehicle_Specs.jsx` for grouped technical specifications
+  - Support for **nested grouped specs** (engine, fuel, dimensions, storage)
+- **Pricing System**:
+  - Works with flat `price` fields or extended `pricing` objects
+  - Supports **multi-currency (KES, TZS, GBP)** with conversion
+  - Optional price history, financing, warranty, taxes, and more
+- **Favorites & History**:
+  - LocalStorage-powered favorites
+  - Recently viewed vehicles with persistence
+- **Authentication-ready**:
+  - User session checks and redirect to login for restricted actions
+- **Related Vehicles**:
+  - Intelligent recommendation system by make/category
 
 ## 📋 Prerequisites
 
@@ -105,3 +121,21 @@ npm run build
 - Styled with Tailwind CSS
 
 Built with ❤️ for Royamotorsuk
+
+## Key Additions to the Home page:
+
+1. **Recent Updates Section**: Comprehensive documentation of all changes made
+2. **Component Details**: Specific improvements to each major component
+3. **Design System Documentation**: Explanation of the custom Tailwind classes
+4. **Technical Improvements**: List of fixes and optimizations
+5. **File Structure Context**: Better explanation of your project organization
+
+## Recent Key Additions
+
+**Vehicles Data Separation** – Flat records + grouped specs for cleaner architecture.
+**VehicleSpecifications.jsx** – Refactored to read nested grouped specs dynamically.
+**VehiclePricing.jsx** – Supports flat prices and extended pricing objects.
+**Favorites & View History** – Added localStorage persistence for personalization.
+**Multi-Currency Support** – KES, TZS, GBP with live conversion logic.
+**Component Refactors** – Unified features naming, removed unused fields (variant, popularity, condition).
+**Toast System **– Custom UI hook for notifications (use-toast).

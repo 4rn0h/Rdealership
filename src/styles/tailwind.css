@@ -105,4 +105,74 @@
   .luxury-gradient {
     background: linear-gradient(135deg, #8B0000 0%, #B8860B 100%);
   }
+
+  /* Add these missing classes */
+  .section {
+    @apply py-16 md:py-24;
+  }
+  
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+}
+@layer utilities {
+  .animate-pulse-slow {
+    animation: pulseSlow 3s infinite;
+  }
+  
+  .text-gold-gradient {
+    background: linear-gradient(135deg, #F5F5F5 0%, #B8860B 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-road-line {
+    animation: roadLine 1.5s linear infinite;
+  }
+  
+  .animate-vehicle-slide {
+    animation: vehicleSlide 1s ease-out;
+  }
+  
+  @keyframes pulseSlow {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+  
+  @keyframes roadLine {
+    0% {
+      left: -8px;
+    }
+    100% {
+      left: 100%;
+    }
+  }
+  
+  @keyframes vehicleSlide {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
 }

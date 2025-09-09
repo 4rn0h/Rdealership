@@ -1,3 +1,5 @@
+//src/pages/home/index.jsx
+
 import React, { useEffect } from "react";
 import Hero from "./components/Hero";
 import FeaturedCars from "./components/FeaturedCars";
@@ -16,20 +18,18 @@ export default function Home() {
       <WhyChooseUs />
 
       {/* UK to East Africa Section */}
-      <div className="bg-neutral py-16 md:py-24">
-        <div className="container-custom">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            {/* Left Content */}
-            <div className="flex flex-col justify-center">
-              <h2 className="text-3xl md:text-4xl font-heading font-medium mb-6 text-primary leading-snug">
+      <div className="bg-neutral py-12 md:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row gap-8 md:gap-12 items-start">
+            {/* Left Content - Text */}
+            <div className="flex-1">
+              <h2 className="text-2xl md:text-3xl font-medium mb-4 text-primary">
                 From the UK to East Africa:{" "}
-                <span className="block text-accent">A Seamless Experience</span>
+                <span className="block text-accent mt-1">A Seamless Experience</span>
               </h2>
-              <p className="text-gray-700 mb-6">
-                At RoyaMotorsUK, we specialize in connecting discerning clients
-                in Kenya and Tanzania with the finest luxury vehicles sourced
-                directly from the UK. Our comprehensive service covers every
-                aspect of your luxury car acquisition.
+              <p className="text-muted-foreground mb-6">
+                At RoyaMotorsUK, we specialize in connecting discerning clients in Kenya and Tanzania with the finest luxury vehicles sourced
+                directly from the UK. Our comprehensive service covers every aspect of your luxury car acquisition.
               </p>
 
               <ul className="space-y-4">
@@ -52,7 +52,7 @@ export default function Home() {
                   },
                 ].map((item, idx) => (
                   <li key={idx} className="flex items-start">
-                    <div className="bg-accent text-primary rounded-full p-1 mt-1 mr-3">
+                    <div className="bg-accent text-primary rounded-full p-1.5 mt-0.5 mr-4 flex-shrink-0">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-4 w-4"
@@ -67,35 +67,31 @@ export default function Home() {
                       </svg>
                     </div>
                     <div className="text-primary">
-                      <strong className="font-medium">{item.title}:</strong>{" "}
-                      {item.desc}
+                      <strong className="font-semibold">{item.title}:</strong>{" "}
+                      <span className="text-muted-foreground">{item.desc}</span>
                     </div>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* Right Content (Image + Stats) */}
-            <div className="flex flex-col justify-center">
-              <div className="bg-white p-6 rounded-lg shadow-lg">
+            {/* Right Content - Image and Stats */}
+            <div className="flex-1 w-full">
+              <div className="bg-card p-5 rounded-lg luxury-shadow-subtle border border-border">
                 <img
                   src="/assets/images/WhyRoya.jpeg"
-                  alt="Luxury car shipping"
-                  className="w-full h-auto rounded-lg"
+                  alt="Luxury car shipping from UK to East Africa"
+                  className="w-full h-auto rounded-md mb-6 object-cover aspect-video"
                 />
-
-                <div className="mt-6 flex flex-col sm:flex-row gap-4">
-                  <div className="flex-1 border-l-4 border-accent pl-4">
-                    <p className="text-4xl font-bold text-primary">100%</p>
-                    <p className="text-gray-600 text-primary">
-                      Secure Transactions
-                    </p>
+                
+                <div className="flex justify-between">
+                  <div className="text-center flex-1 border-r border-border pr-4">
+                    <p className="text-3xl font-bold text-primary">100%</p>
+                    <p className="text-muted-foreground mt-1 text-sm">Secure Transactions</p>
                   </div>
-                  <div className="flex-1 border-l-4 border-accent pl-4">
-                    <p className="text-4xl font-bold text-primary">250+</p>
-                    <p className="text-gray-600 text-primary">
-                      Satisfied Clients
-                    </p>
+                  <div className="text-center flex-1 pl-4">
+                    <p className="text-3xl font-bold text-primary">250+</p>
+                    <p className="text-muted-foreground mt-1 text-sm">Satisfied Clients</p>
                   </div>
                 </div>
               </div>

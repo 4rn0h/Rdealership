@@ -9,6 +9,10 @@ import CommunicationHistory from './components/CommunicationHistory';
 import InquiryStats from './components/InquiryStats';
 import QuickActions from './components/QuickActions';
 
+// ✅ import mock data
+import { mockInquiries, mockTestDrives, mockCommunications, mockStats } from '../../data/Inquiry_Data';
+import vehiclesData from '../../data/Vehicles_Data';
+
 const InquiryManagement = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('inquiries');
@@ -20,161 +24,28 @@ const InquiryManagement = () => {
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
 
-  // Mock data
+  // Load mock data
   useEffect(() => {
-    const mockInquiries = [
-      {
-        id: "INQ001",
-        vehicle: {
-          name: "BMW X7 xDrive40i 2023",
-          image: "https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg?auto=compress&cs=tinysrgb&w=800"
-        },
-        message: "I\'m interested in this luxury SUV. Could you provide more details about the interior features and available financing options? I\'m particularly interested in the premium sound system and leather seating.",
-        status: "pending",
-        createdAt: new Date('2025-01-10T09:30:00'),
-        lastActivity: new Date('2025-01-10T09:30:00'),
-        agent: null,
-        response: null,
-        responseDate: null
-      },
-      {
-        id: "INQ002",
-        vehicle: {
-          name: "Mercedes-Benz S-Class S500 2024",
-          image: "https://images.pexels.com/photos/3729464/pexels-photo-3729464.jpeg?auto=compress&cs=tinysrgb&w=800"
-        },
-        message: "What is the fuel efficiency of this model? Also, does it come with the latest driver assistance features?",
-        status: "responded",
-        createdAt: new Date('2025-01-08T14:15:00'),
-        lastActivity: new Date('2025-01-09T11:20:00'),
-        agent: {
-          name: "Sarah Johnson",
-          email: "sarah.johnson@RoyaMotorsUk.co.ke"
-        },
-        response: "Thank you for your interest! The S500 offers excellent fuel efficiency with an average of 8.5L/100km in combined driving. It comes equipped with the latest Mercedes-Benz Intelligent Drive package including adaptive cruise control, lane keeping assist, and automatic emergency braking. Would you like to schedule a test drive to experience these features firsthand?",
-        responseDate: new Date('2025-01-09T11:20:00')
-      },
-      {
-        id: "INQ003",
-        vehicle: {
-          name: "Audi Q8 55 TFSI Quattro 2023",
-          image: "https://images.pexels.com/photos/1719648/pexels-photo-1719648.jpeg?auto=compress&cs=tinysrgb&w=800"
-        },
-        message: "Is this vehicle still available? I\'m looking for a luxury SUV with good off-road capabilities.",
-        status: "scheduled",
-        createdAt: new Date('2025-01-05T16:45:00'),
-        lastActivity: new Date('2025-01-11T10:30:00'),
-        agent: {
-          name: "Michael Chen",
-          email: "michael.chen@RoyaMotorsUk.co.ke"
-        },
-        response: "Yes, this Q8 is still available! It features Audi's renowned Quattro all-wheel drive system, perfect for both city driving and off-road adventures. I've scheduled a test drive for you this Saturday. Looking forward to showing you this exceptional vehicle!",
-        responseDate: new Date('2025-01-11T10:30:00')
-      }
-    ];
+    // Join vehicle details by vehicleId
+    const enrichedInquiries = mockInquiries.map(inq => ({
+      ...inq,
+      vehicle: vehiclesData.find(v => v.id === inq.vehicleId),
+    }));
 
-    const mockTestDrives = [
-      {
-        id: "TD001",
-        vehicle: {
-          name: "Audi Q8 55 TFSI Quattro 2023",
-          image: "https://images.pexels.com/photos/1719648/pexels-photo-1719648.jpeg?auto=compress&cs=tinysrgb&w=800"
-        },
-        scheduledDate: new Date('2025-01-18T10:00:00'),
-        status: "confirmed",
-        location: {
-          name: "RoyaMotorsUk Showroom Westlands",
-          address: "Westlands Road, Nairobi",
-          coordinates: { lat: -1.2634, lng: 36.8155 }
-        },
-        agent: {
-          name: "Michael Chen",
-          phone: "+254 712 345 678",
-          email: "michael.chen@RoyaMotorsUk.co.ke"
-        },
-        notes: "Customer specifically interested in off-road capabilities and interior luxury features."
-      },
-      {
-        id: "TD002",
-        vehicle: {
-          name: "BMW X5 xDrive30d 2024",
-          image: "https://images.pexels.com/photos/2365572/pexels-photo-2365572.jpeg?auto=compress&cs=tinysrgb&w=800"
-        },
-        scheduledDate: new Date('2025-01-15T14:30:00'),
-        status: "completed",
-        location: {
-          name: "RoyaMotorsUk Showroom Karen",
-          address: "Karen Shopping Centre, Nairobi",
-          coordinates: { lat: -1.3197, lng: 36.7073 }
-        },
-        agent: {
-          name: "Sarah Johnson",
-          phone: "+254 723 456 789",
-          email: "sarah.johnson@RoyaMotorsUk.co.ke"
-        },
-        notes: "Test drive completed successfully. Customer very impressed with performance."
-      }
-    ];
+    const enrichedTestDrives = mockTestDrives.map(td => ({
+      ...td,
+      vehicle: vehiclesData.find(v => v.id === td.vehicleId),
+    }));
 
-    const mockCommunications = [
-      {
-        id: "COMM001",
-        type: "inquiry",
-        subject: "BMW X7 Inquiry Response",
-        content: "Thank you for your inquiry about the BMW X7. This luxury SUV features a spacious 7-seater configuration with premium leather upholstery, a state-of-the-art infotainment system, and advanced safety features. The financing options include competitive rates starting from 8.5% APR with flexible payment terms.",
-        date: new Date('2025-01-10T11:45:00'),
-        vehicle: {
-          name: "BMW X7 xDrive40i 2023"
-        },
-        agent: {
-          name: "David Kimani"
-        },
-        rating: 5,
-        attachments: []
-      },
-      {
-        id: "COMM002",
-        type: "call",
-        subject: "Follow-up Call",
-        content: "Had a productive 15-minute call with the customer discussing their specific requirements for a luxury SUV. They're particularly interested in vehicles with advanced driver assistance systems and premium interior features. Scheduled a test drive for next week.",
-        date: new Date('2025-01-09T15:20:00'),
-        vehicle: {
-          name: "Mercedes-Benz S-Class S500 2024"
-        },
-        agent: {
-          name: "Sarah Johnson"
-        },
-        rating: 4,
-        attachments: []
-      },
-      {
-        id: "COMM003",
-        type: "email",
-        subject: "Test Drive Confirmation",
-        content: "This email confirms your test drive appointment for the Audi Q8 on Saturday, January 18th at 10:00 AM. Please bring a valid driving license and arrive 15 minutes early for a brief orientation. We look forward to showing you this exceptional vehicle!",
-        date: new Date('2025-01-11T10:30:00'),
-        vehicle: {
-          name: "Audi Q8 55 TFSI Quattro 2023"
-        },
-        agent: {
-          name: "Michael Chen"
-        },
-        rating: null,
-        attachments: ['test_drive_checklist.pdf']
-      }
-    ];
+    const enrichedCommunications = mockCommunications.map(comm => ({
+      ...comm,
+      vehicle: vehiclesData.find(v => v.id === comm.vehicleId),
+    }));
 
-    const mockStats = {
-      total: 12,
-      pending: 3,
-      testDrives: 2,
-      avgResponseTime: "4.2 hrs"
-    };
-
-    setInquiries(mockInquiries);
-    setTestDrives(mockTestDrives);
-    setCommunications(mockCommunications);
-    setFilteredCommunications(mockCommunications);
+    setInquiries(enrichedInquiries);
+    setTestDrives(enrichedTestDrives);
+    setCommunications(enrichedCommunications);
+    setFilteredCommunications(enrichedCommunications);
     setStats(mockStats);
     setLoading(false);
   }, []);

@@ -24,7 +24,7 @@ const TrustSignals = () => {
     { name: 'Kenya Auto Dealers Association', badge: 'KADA Certified' },
     { name: 'Tanzania Motor Dealers Association', badge: 'TMDA Member' },
     { name: 'UK Company Registration', badge: 'Companies House' }
-  ];
+  ]; 
 
   return (
     <div className="space-y-6">

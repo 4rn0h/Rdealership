@@ -4,8 +4,9 @@ import Image from '../../../components/AppImage';
 import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
 import Select from '../../../components/ui/Select';
+import { supabase, uploadVehicleImage } from '../../../lib/supabaseClient';
 
-const VehicleFormModal = ({ isOpen, onClose, vehicle, onSave }) => {
+const VehicleFormModal = ({ isOpen, onClose, vehicle }) => {
   const [formData, setFormData] = useState(vehicle || {
     make: '',
     model: '',
@@ -23,13 +24,15 @@ const VehicleFormModal = ({ isOpen, onClose, vehicle, onSave }) => {
     images: [],
     status: 'available'
   });
-  
+
   const [dragActive, setDragActive] = useState(false);
   const [uploadingImages, setUploadingImages] = useState(false);
+  const [saving, setSaving] = useState(false);
   const fileInputRef = useRef(null);
 
   if (!isOpen) return null;
 
+  // ---------- Select Options ----------
   const makeOptions = [
     { value: 'mercedes', label: 'Mercedes-Benz' },
     { value: 'bmw', label: 'BMW' },
@@ -78,65 +81,125 @@ const VehicleFormModal = ({ isOpen, onClose, vehicle, onSave }) => {
     { value: 'reserved', label: 'Reserved' }
   ];
 
+  // ---------- Handlers ----------
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   const handleDrag = (e) => {
-    e?.preventDefault();
-    e?.stopPropagation();
-    if (e?.type === "dragenter" || e?.type === "dragover") {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
       setDragActive(true);
-    } else if (e?.type === "dragleave") {
+    } else if (e.type === "dragleave") {
       setDragActive(false);
     }
   };
 
   const handleDrop = (e) => {
-    e?.preventDefault();
-    e?.stopPropagation();
+    e.preventDefault();
+    e.stopPropagation();
     setDragActive(false);
-    
-    if (e?.dataTransfer?.files && e?.dataTransfer?.files?.[0]) {
-      handleFiles(e?.dataTransfer?.files);
+    if (e.dataTransfer?.files?.length) {
+      handleFiles(e.dataTransfer.files);
     }
   };
 
   const handleFiles = async (files) => {
     setUploadingImages(true);
     const newImages = [];
-    
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    const maxSize = 10 * 1024 * 1024;
+
     for (let file of files) {
-      if (file?.type?.startsWith('image/')) {
-        // Mock image upload - in real app, upload to Supabase Storage
-        const mockUrl = `https://images.unsplash.com/photo-${Date.now()}-${Math.random()?.toString(36)?.substr(2, 9)}?w=800&h=600&fit=crop`;
-        newImages?.push(mockUrl);
+      if (!allowedTypes.includes(file.type)) {
+        alert(`${file.name} is not a valid image type.`);
+        continue;
+      }
+      if (file.size > maxSize) {
+        alert(`${file.name} exceeds 10MB.`);
+        continue;
+      }
+      try {
+        const url = await uploadVehicleImage(file);
+        newImages.push(url);
+      } catch (err) {
+        console.error(err);
+        alert(`Failed to upload ${file.name}`);
       }
     }
-    
+
     setFormData(prev => ({
       ...prev,
-      images: [...prev?.images, ...newImages]
+      images: [...prev.images, ...newImages]
     }));
-    
+
     setUploadingImages(false);
   };
 
   const removeImage = (index) => {
     setFormData(prev => ({
       ...prev,
-      images: prev?.images?.filter((_, i) => i !== index)
+      images: prev.images.filter((_, i) => i !== index)
     }));
   };
 
-  const handleSubmit = (e) => {
-    e?.preventDefault();
-    onSave(formData);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+
+    try {
+      // Get logged in user
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError) throw userError;
+      if (!user) throw new Error("You must be logged in to add vehicles");
+
+      const payload = {
+        make: formData.make,
+        model: formData.model,
+        variant: formData.variant,
+        year: formData.year,
+        price: formData.price,
+        mileage: formData.mileage,
+        fuel_type: formData.fuelType,
+        transmission: formData.transmission,
+        body_type: formData.bodyType,
+        color: formData.color,
+        description: formData.description,
+        features: formData.features,
+        image_urls: formData.images,
+        status: formData.status,
+        location: formData.location,
+        created_by: user.id, // 👈 important
+      };
+
+      let response;
+      if (vehicle?.id) {
+        response = await supabase
+          .from("vehicles")
+          .update({ ...payload, updated_at: new Date().toISOString() })
+          .eq("id", vehicle.id)
+          .select();
+      } else {
+        response = await supabase
+          .from("vehicles")
+          .insert([payload])
+          .select();
+      }
+
+      if (response.error) throw response.error;
+
+      alert(`✅ Vehicle ${vehicle ? "updated" : "added"} successfully!`);
+      onClose();
+    } catch (err) {
+      console.error(err);
+      alert("❌ Error saving vehicle: " + err.message);
+    } finally {
+      setSaving(false);
+    }
   };
 
+  // ---------- Render ----------
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
       <div className="bg-card border border-border rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden luxury-shadow-prominent">
@@ -145,12 +208,7 @@ const VehicleFormModal = ({ isOpen, onClose, vehicle, onSave }) => {
           <h2 className="text-xl font-heading font-semibold text-foreground">
             {vehicle ? 'Edit Vehicle' : 'Add New Vehicle'}
           </h2>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={onClose}
-            iconName="X"
-          />
+          <Button size="sm" variant="ghost" onClick={onClose} iconName="X" />
         </div>
 
         {/* Modal Content */}
@@ -161,12 +219,12 @@ const VehicleFormModal = ({ isOpen, onClose, vehicle, onSave }) => {
               <label className="block text-sm font-medium text-foreground mb-2">
                 Vehicle Images
               </label>
-              
-              {/* Drag and Drop Area */}
+
               <div
                 className={`border-2 border-dashed rounded-lg p-8 text-center luxury-micro-transition ${
                   dragActive 
-                    ? 'border-accent bg-accent/5' :'border-border hover:border-accent/50'
+                    ? 'border-accent bg-accent/5' 
+                    : 'border-border hover:border-accent/50'
                 }`}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
@@ -183,7 +241,7 @@ const VehicleFormModal = ({ isOpen, onClose, vehicle, onSave }) => {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => fileInputRef?.current?.click()}
+                  onClick={() => fileInputRef.current?.click()}
                   loading={uploadingImages}
                   iconName="Plus"
                   iconPosition="left"
@@ -195,15 +253,14 @@ const VehicleFormModal = ({ isOpen, onClose, vehicle, onSave }) => {
                   type="file"
                   multiple
                   accept="image/*"
-                  onChange={(e) => handleFiles(e?.target?.files)}
+                  onChange={(e) => handleFiles(e.target.files)}
                   className="hidden"
                 />
               </div>
 
-              {/* Image Preview Grid */}
-              {formData?.images?.length > 0 && (
+              {formData.images.length > 0 && (
                 <div className="grid grid-cols-4 gap-4 mt-4">
-                  {formData?.images?.map((image, index) => (
+                  {formData.images.map((image, index) => (
                     <div key={index} className="relative group">
                       <div className="aspect-video rounded-lg overflow-hidden bg-muted">
                         <Image
@@ -233,144 +290,44 @@ const VehicleFormModal = ({ isOpen, onClose, vehicle, onSave }) => {
 
             {/* Basic Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Select
-                label="Make"
-                required
-                options={makeOptions}
-                value={formData?.make}
-                onChange={(value) => handleInputChange('make', value)}
-              />
-              
-              <Input
-                label="Model"
-                type="text"
-                required
-                value={formData?.model}
-                onChange={(e) => handleInputChange('model', e?.target?.value)}
-                placeholder="e.g., C-Class, X5, A4"
-              />
-              
-              <Input
-                label="Variant"
-                type="text"
-                value={formData?.variant}
-                onChange={(e) => handleInputChange('variant', e?.target?.value)}
-                placeholder="e.g., AMG, M Sport, S-Line"
-              />
-              
-              <Input
-                label="Year"
-                type="number"
-                required
-                min="1990"
-                max={new Date()?.getFullYear() + 1}
-                value={formData?.year}
-                onChange={(e) => handleInputChange('year', parseInt(e?.target?.value))}
-              />
-              
-              <Input
-                label="Price (KES)"
-                type="number"
-                required
-                min="0"
-                value={formData?.price}
-                onChange={(e) => handleInputChange('price', parseFloat(e?.target?.value))}
-                placeholder="e.g., 5000000"
-              />
-              
-              <Input
-                label="Mileage (km)"
-                type="number"
-                min="0"
-                value={formData?.mileage}
-                onChange={(e) => handleInputChange('mileage', parseInt(e?.target?.value))}
-                placeholder="e.g., 50000"
-              />
+              <Select label="Make" required options={makeOptions} value={formData.make} onChange={(value) => handleInputChange('make', value)} />
+              <Input label="Model" type="text" required value={formData.model} onChange={(e) => handleInputChange('model', e.target.value)} placeholder="e.g., C-Class, X5, A4" />
+              <Input label="Variant" type="text" value={formData.variant} onChange={(e) => handleInputChange('variant', e.target.value)} placeholder="e.g., AMG, M Sport, S-Line" />
+              <Input label="Year" type="number" required min="1990" max={new Date()?.getFullYear() + 1} value={formData.year} onChange={(e) => handleInputChange('year', parseInt(e.target.value))} />
+              <Input label="Price (KES)" type="number" required min="0" value={formData.price} onChange={(e) => handleInputChange('price', parseFloat(e.target.value))} placeholder="e.g., 5000000" />
+              <Input label="Mileage (km)" type="number" min="0" value={formData.mileage} onChange={(e) => handleInputChange('mileage', parseInt(e.target.value))} placeholder="e.g., 50000" />
             </div>
 
             {/* Technical Specifications */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Select
-                label="Fuel Type"
-                required
-                options={fuelTypeOptions}
-                value={formData?.fuelType}
-                onChange={(value) => handleInputChange('fuelType', value)}
-              />
-              
-              <Select
-                label="Transmission"
-                required
-                options={transmissionOptions}
-                value={formData?.transmission}
-                onChange={(value) => handleInputChange('transmission', value)}
-              />
-              
-              <Select
-                label="Body Type"
-                required
-                options={bodyTypeOptions}
-                value={formData?.bodyType}
-                onChange={(value) => handleInputChange('bodyType', value)}
-              />
-              
-              <Input
-                label="Color"
-                type="text"
-                required
-                value={formData?.color}
-                onChange={(e) => handleInputChange('color', e?.target?.value)}
-                placeholder="e.g., Pearl White, Jet Black"
-              />
+              <Select label="Fuel Type" required options={fuelTypeOptions} value={formData.fuelType} onChange={(value) => handleInputChange('fuelType', value)} />
+              <Select label="Transmission" required options={transmissionOptions} value={formData.transmission} onChange={(value) => handleInputChange('transmission', value)} />
+              <Select label="Body Type" required options={bodyTypeOptions} value={formData.bodyType} onChange={(value) => handleInputChange('bodyType', value)} />
+              <Input label="Color" type="text" required value={formData.color} onChange={(e) => handleInputChange('color', e.target.value)} placeholder="e.g., Pearl White, Jet Black" />
             </div>
 
-            {/* Location and Status */}
+            {/* Location & Status */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Select
-                label="Location"
-                required
-                options={locationOptions}
-                value={formData?.location}
-                onChange={(value) => handleInputChange('location', value)}
-              />
-              
-              <Select
-                label="Status"
-                required
-                options={statusOptions}
-                value={formData?.status}
-                onChange={(value) => handleInputChange('status', value)}
-              />
+              <Select label="Location" required options={locationOptions} value={formData.location} onChange={(value) => handleInputChange('location', value)} />
+              <Select label="Status" required options={statusOptions} value={formData.status} onChange={(value) => handleInputChange('status', value)} />
             </div>
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Description
-              </label>
+              <label className="block text-sm font-medium text-foreground mb-2">Description</label>
               <textarea
                 rows={4}
-                value={formData?.description}
-                onChange={(e) => handleInputChange('description', e?.target?.value)}
+                value={formData.description}
+                onChange={(e) => handleInputChange('description', e.target.value)}
                 placeholder="Detailed description of the vehicle, its condition, and unique features..."
                 className="w-full px-3 py-2 border border-border rounded-lg bg-input text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
               />
             </div>
 
-            {/* Form Actions */}
+            {/* Actions */}
             <div className="flex items-center justify-end space-x-4 pt-6 border-t border-border">
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={onClose}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                iconName="Save"
-                iconPosition="left"
-              >
+              <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>
+              <Button type="submit" iconName="Save" iconPosition="left" loading={saving}>
                 {vehicle ? 'Update Vehicle' : 'Add Vehicle'}
               </Button>
             </div>

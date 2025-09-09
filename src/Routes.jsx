@@ -55,6 +55,22 @@ const Routes = () => {
             }
           />
           <Route
+            path="/terms"
+            element={
+              <PublicLayout>
+                <Terms />
+              </PublicLayout>
+            }
+          />
+          <Route
+            path="/privacy-policy"
+            element={
+              <PublicLayout>
+                <PrivacyPolicy />
+              </PublicLayout>
+            }
+          />
+          <Route
             path="/vehicle-browse-search"
             element={
               <PublicLayout>
@@ -94,8 +110,16 @@ const Routes = () => {
               </PublicLayout>
             }
           />
+           <Route
+            path="/user-authentication"
+            element={
+              <PublicLayout>
+                <UserAuthentication />
+              </PublicLayout>
+            }
+          />
 
-          {/* Auth Routes (no Header/Footer) */}
+          {/* Auth Routes (no Header/Footer) 
           <Route
             path="/user-authentication"
             element={
@@ -103,7 +127,7 @@ const Routes = () => {
                 <UserAuthentication />
               </AuthLayout>
             }
-          />
+          /> */}
 
           {/* Fallback */}
           <Route path="*" element={<NotFound />} />

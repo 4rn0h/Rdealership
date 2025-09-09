@@ -1,0 +1,642 @@
+// Mock vehicle data
+  const mockVehicles = [
+    {
+      id: 1,
+      make: 'Mercedes-Benz',
+      model: 'C-Class',
+      variant: 'C300 AMG Line',
+      year: 2023,
+      price: 8500000,
+      originalPrice: 9200000,
+      mileage: 15000,
+      fuelType: 'Petrol',
+      transmission: 'Automatic',
+      bodyType: 'Sedan',
+      condition: 'used',
+      location: 'Nairobi',
+      status: 'available',
+      images: [
+        'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&h=600&fit=crop',
+        'https://images.unsplash.com/photo-1617788138017-80ad40651399?w=800&h=600&fit=crop'
+      ],
+      keyFeatures: ['Leather Seats', 'Sunroof', 'Navigation System', 'Backup Camera', 'Bluetooth'],
+      listedDate: '2 days ago',
+      popularity: 95
+    },
+    {
+      id: 2,
+      make: 'BMW',
+      model: '5 Series',
+      variant: '530i M Sport',
+      year: 2022,
+      price: 7800000,
+      mileage: 28000,
+      fuelType: 'Petrol',
+      transmission: 'Automatic',
+      bodyType: 'Sedan',
+      condition: 'used',
+      location: 'Mombasa',
+      status: 'available',
+      images: [
+        'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&h=600&fit=crop',
+        'https://images.unsplash.com/photo-1617788138017-80ad40651399?w=800&h=600&fit=crop'
+      ],
+      keyFeatures: ['Heated Seats', 'Premium Sound', 'Keyless Entry', 'Cruise Control'],
+      listedDate: '1 week ago',
+      popularity: 88
+    },
+    {
+      id: 3,
+      make: 'Audi',
+      model: 'Q5',
+      variant: '45 TFSI Quattro',
+      year: 2023,
+      price: 9200000,
+      mileage: 8500,
+      fuelType: 'Petrol',
+      transmission: 'Automatic',
+      bodyType: 'SUV',
+      condition: 'used',
+      location: 'Nairobi',
+      status: 'reserved',
+      images: [
+        'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800&h=600&fit=crop'
+      ],
+      keyFeatures: ['All-Wheel Drive', 'Virtual Cockpit', 'Matrix LED', 'Parking Sensors'],
+      listedDate: '3 days ago',
+      popularity: 92
+    },
+    {
+      id: 4,
+      make: 'Lexus',
+      model: 'RX',
+      variant: 'RX 350 F Sport',
+      year: 2022,
+      price: 8900000,
+      mileage: 22000,
+      fuelType: 'Petrol',
+      transmission: 'Automatic',
+      bodyType: 'SUV',
+      condition: 'used',
+      location: 'Kisumu',
+      status: 'available',
+      images: [
+        'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=800&h=600&fit=crop'
+      ],
+      keyFeatures: ['Hybrid System', 'Mark Levinson Audio', 'Safety System+', 'Wireless Charging'],
+      listedDate: '5 days ago',
+      popularity: 85
+    },
+    {
+      id: 5,
+      make: 'Jaguar',
+      model: 'F-PACE',
+      variant: 'P300 R-Dynamic',
+      year: 2023,
+      price: 10500000,
+      mileage: 12000,
+      fuelType: 'Petrol',
+      transmission: 'Automatic',
+      bodyType: 'SUV',
+      condition: 'used',
+      location: 'Nairobi',
+      status: 'available',
+      images: [
+        'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&h=600&fit=crop'
+      ],
+      keyFeatures: ['Meridian Sound', 'Terrain Response', 'Activity Key', 'Gesture Tailgate'],
+      listedDate: '1 day ago',
+      popularity: 78
+    },
+    {
+      id: 6,
+      make: 'Porsche',
+      model: 'Macan',
+      variant: 'Macan S',
+      year: 2023,
+      price: 12800000,
+      mileage: 5500,
+      fuelType: 'Petrol',
+      transmission: 'Automatic',
+      bodyType: 'SUV',
+      condition: 'used',
+      location: 'Nairobi',
+      status: 'available',
+      images: [
+        'https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?w=800&h=600&fit=crop'
+      ],
+      keyFeatures: ['Sport Chrono', 'PASM', 'Bose Audio', 'Panoramic Roof'],
+      listedDate: '4 hours ago',
+      popularity: 96
+    },
+    {
+      id: 7,
+      make: 'Land Rover',
+      model: 'Range Rover Evoque',
+      variant: 'P250 R-Dynamic',
+      year: 2022,
+      price: 7500000,
+      mileage: 35000,
+      fuelType: 'Petrol',
+      transmission: 'Automatic',
+      bodyType: 'SUV',
+      condition: 'used',
+      location: 'Eldoret',
+      status: 'available',
+      images: [
+        'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&h=600&fit=crop'
+      ],
+      keyFeatures: ['Terrain Response 2', 'ClearSight', 'Touch Pro Duo', 'Wade Sensing'],
+      listedDate: '1 week ago',
+      popularity: 82
+    },
+    {
+      id: 8,
+      make: 'Volvo',
+      model: 'XC90',
+      variant: 'T6 Inscription',
+      year: 2023,
+      price: 11200000,
+      mileage: 18000,
+      fuelType: 'Hybrid',
+      transmission: 'Automatic',
+      bodyType: 'SUV',
+      condition: 'used',
+      location: 'Nairobi',
+      status: 'available',
+      images: [
+        'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800&h=600&fit=crop'
+      ],
+      keyFeatures: ['Pilot Assist', 'Bowers & Wilkins', 'Air Suspension', 'Crystal Gear Shifter'],
+      listedDate: '2 days ago',
+      popularity: 89
+    }
+  ];
+  
+  
+  import { Car } from '../types';
+
+export const cars: Car[] = [
+  {
+    id: '1',
+    make: 'Bentley',
+    model: 'Continental GT',
+    year: 2023,
+    price: 245000,
+    mileage: 1500,
+    exteriorColor: 'Onyx Black',
+    interiorColor: 'Linen',
+    fuelType: 'Petrol',
+    transmission: 'Automatic',
+    engineSize: '6.0L W12',
+    description: 'The Bentley Continental GT represents the pinnacle of British luxury grand touring. This exquisite example, finished in Onyx Black with a handcrafted Linen interior, delivers effortless power from its 6.0-liter W12 engine. With just 1,500 miles on the odometer, it presents in pristine condition, indistinguishable from new. The Continental GT combines breathtaking performance with unparalleled comfort, making it the perfect vehicle for both spirited driving and luxurious long-distance journeys.',
+    features: [
+      'Mulliner Driving Specification',
+      'Naim for Bentley Premium Audio',
+      'Rotating Display',
+      'Panoramic Roof',
+      'Adaptive Cruise Control',
+      'Night Vision',
+      'Head-Up Display',
+      'Massage Seats',
+      'Diamond Knurling Package',
+      'City Specification & Touring Specification'
+    ],
+    images: [
+      'https://images.pexels.com/photos/3764984/pexels-photo-3764984.jpeg',
+      'https://images.pexels.com/photos/3764982/pexels-photo-3764982.jpeg',
+      'https://images.pexels.com/photos/3764979/pexels-photo-3764979.jpeg',
+      'https://images.pexels.com/photos/3764977/pexels-photo-3764977.jpeg'
+    ],
+    status: 'Available'
+  },
+  {
+    id: '2',
+    make: 'Range Rover',
+    model: 'SV Autobiography',
+    year: 2022,
+    price: 195000,
+    mileage: 8500,
+    exteriorColor: 'Santorini Black',
+    interiorColor: 'Ebony/Ivory',
+    fuelType: 'Petrol',
+    transmission: 'Automatic',
+    engineSize: '5.0L V8',
+    description: 'This Range Rover SV Autobiography represents the ultimate expression of luxury SUV motoring. Finished in striking Santorini Black with a dual-tone Ebony/Ivory interior, this vehicle exudes sophistication. The supercharged 5.0-liter V8 engine provides effortless power, while the long-wheelbase configuration ensures exceptional rear passenger comfort. With just 8,500 miles, this nearly-new example comes with all the refinement, capability, and prestige that defines the Range Rover brand.',
+    features: [
+      'Executive Class Rear Seats',
+      'Hot Stone Massage Function',
+      'Deployable Tables',
+      'Refrigerated Compartment',
+      'Meridian Signature Sound System',
+      'Pixel-Laser LED Headlights',
+      'All-Terrain Progress Control',
+      'Digital Rearview Mirror',
+      'Soft Door Close',
+      'Activity Key'
+    ],
+    images: [
+      'https://images.pexels.com/photos/116675/pexels-photo-116675.jpeg',
+      'https://images.pexels.com/photos/1638459/pexels-photo-1638459.jpeg',
+      'https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg',
+      'https://images.pexels.com/photos/244206/pexels-photo-244206.jpeg'
+    ],
+    status: 'Available'
+  },
+  {
+    id: '3',
+    make: 'Rolls-Royce',
+    model: 'Ghost',
+    year: 2022,
+    price: 380000,
+    mileage: 3200,
+    exteriorColor: 'Arctic White',
+    interiorColor: 'Navy Blue',
+    fuelType: 'Petrol',
+    transmission: 'Automatic',
+    engineSize: '6.75L V12',
+    description: 'This Rolls-Royce Ghost embodies effortless luxury with its pristine Arctic White exterior and sumptuous Navy Blue leather interior. Powered by the iconic 6.75-liter V12 twin-turbocharged engine, it delivers a perfect balance of power and refinement. With only 3,200 miles, this nearly-new Ghost features Rolls-Royce\'s groundbreaking Planar Suspension System, providing the famed "magic carpet ride" that isolates passengers from the world outside. This is modern luxury at its finest.',
+    features: [
+      'Starlight Headliner',
+      'Bespoke Audio System',
+      'Rear Theatre Configuration',
+      'Picnic Tables',
+      'Illuminated Fascia',
+      'Lambswool Floor Mats',
+      'Spirit of Ecstasy Illuminated',
+      'Rear Massage Seats',
+      'Champagne Cooler',
+      'Individual Rear Seats'
+    ],
+    images: [
+      'https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg',
+      'https://images.pexels.com/photos/3802512/pexels-photo-3802512.jpeg',
+      'https://images.pexels.com/photos/3802509/pexels-photo-3802509.jpeg',
+      'https://images.pexels.com/photos/3802513/pexels-photo-3802513.jpeg'
+    ],
+    status: 'Available'
+  },
+  {
+    id: '4',
+    make: 'Aston Martin',
+    model: 'DBS Superleggera',
+    year: 2021,
+    price: 275000,
+    mileage: 5800,
+    exteriorColor: 'Quantum Silver',
+    interiorColor: 'Obsidian Black',
+    fuelType: 'Petrol',
+    transmission: 'Automatic',
+    engineSize: '5.2L V12',
+    description: 'This Aston Martin DBS Superleggera represents the pinnacle of the brand\'s grand touring capabilities. Finished in iconic Quantum Silver with an Obsidian Black interior, this stunning example has covered just 5,800 miles. Powered by a twin-turbocharged 5.2-liter V12 engine producing 715 bhp, the DBS Superleggera combines breathtaking performance with exquisite craftsmanship and British luxury. This particular car features a range of desirable options, making it a collector\'s piece as well as an extraordinary driving machine.',
+    features: [
+      'Carbon Fiber Exterior Package',
+      'Bang & Olufsen BeoSound Audio',
+      'Ventilated Seats',
+      'Carbon Ceramic Brakes',
+      'Technology Package',
+      'Comfort Package',
+      '360-Degree Camera',
+      'Triaxial Quilting',
+      'Satin Chrome Jewelry Pack',
+      'Bespoke Interior Detailing'
+    ],
+    images: [
+      'https://images.pexels.com/photos/337909/pexels-photo-337909.jpeg',
+      'https://images.pexels.com/photos/1035108/pexels-photo-1035108.jpeg',
+      'https://images.pexels.com/photos/2127037/pexels-photo-2127037.jpeg',
+      'https://images.pexels.com/photos/358070/pexels-photo-358070.jpeg'
+    ],
+    status: 'Available'
+  },
+  {
+    id: '5',
+    make: 'Mercedes-Benz',
+    model: 'S-Class S680 Maybach',
+    year: 2023,
+    price: 230000,
+    mileage: 2100,
+    exteriorColor: 'Obsidian Black',
+    interiorColor: 'Sienna Brown/Black',
+    fuelType: 'Petrol',
+    transmission: 'Automatic',
+    engineSize: '6.0L V12',
+    description: 'This Mercedes-Maybach S680 represents the ultimate in luxury sedan transportation. Finished in elegant Obsidian Black with a dual-tone Sienna Brown/Black interior, this vehicle embodies sophistication and presence. Powered by a smooth 6.0-liter V12 engine, it delivers effortless performance with supreme refinement. With just 2,100 miles, this nearly-new example features the very latest technology and comfort features that Mercedes-Benz has to offer, creating a sanctuary of luxury for both driver and passengers.',
+    features: [
+      'Executive Rear Seats with Massage',
+      'Burmester High-End 4D Surround Sound',
+      'Rear Seat Entertainment',
+      'MBUX Interior Assistant',
+      'Active Road Noise Compensation',
+      'Digital Light with Projection Function',
+      'Rear Refrigerator Compartment',
+      'Champagne Flute Holder',
+      'Night Vision Assist',
+      'ENERGIZING Comfort Package'
+    ],
+    images: [
+      'https://images.pexels.com/photos/3457780/pexels-photo-3457780.jpeg',
+      'https://images.pexels.com/photos/3560043/pexels-photo-3560043.jpeg',
+      'https://images.pexels.com/photos/3802513/pexels-photo-3802513.jpeg',
+      'https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg'
+    ],
+    status: 'Available'
+  },
+  {
+    id: '6',
+    make: 'Ferrari',
+    model: 'SF90 Stradale',
+    year: 2022,
+    price: 550000,
+    mileage: 1200,
+    exteriorColor: 'Rosso Corsa',
+    interiorColor: 'Nero',
+    fuelType: 'Hybrid',
+    transmission: 'Automatic',
+    engineSize: '4.0L V8 Hybrid',
+    description: 'This Ferrari SF90 Stradale represents the pinnacle of Ferrari\'s engineering excellence. Finished in the iconic Rosso Corsa with a Nero interior, this hybrid hypercar combines a twin-turbocharged V8 engine with three electric motors to produce a staggering 986 horsepower. With just 1,200 miles from new, this example presents in immaculate condition and features Ferrari\'s most advanced technology to date. The SF90 Stradale sets new benchmarks for performance while also embracing hybrid technology, making it a significant model in Ferrari\'s illustrious history.',
+    features: [
+      'Assetto Fiorano Package',
+      'Carbon Fiber Wheels',
+      'Titanium Exhaust System',
+      'Carbon Fiber Racing Seats',
+      'Head-Up Display',
+      'Carbon Fiber Engine Cover',
+      'Suspension Lifter',
+      'Premium JBL Sound System',
+      'Carbon Fiber Rear Diffuser',
+      'Track Telemetry System'
+    ],
+    images: [
+      'https://images.pexels.com/photos/337909/pexels-photo-337909.jpeg',
+      'https://images.pexels.com/photos/93652/pexels-photo-93652.jpeg',
+      'https://images.pexels.com/photos/10183765/pexels-photo-10183765.jpeg',
+      'https://images.pexels.com/photos/11321242/pexels-photo-11321242.jpeg'
+    ],
+    status: 'Available'
+  },
+  {
+    id: '7',
+    make: 'Ferrari',
+    model: 'Purosangue',
+    year: 2024,
+    price: 425000,
+    mileage: 750,
+    exteriorColor: 'Rosso Mugello',
+    interiorColor: 'Nero',
+    fuelType: 'Petrol',
+    transmission: 'Automatic',
+    engineSize: '6.5L V12',
+    description: 'The Ferrari Purosangue represents Ferrari\'s first four-door, four-seater model, combining the brand\'s racing DNA with unprecedented practicality. This stunning example in Rosso Mugello with Nero interior features the naturally aspirated 6.5-liter V12 engine producing 715 horsepower. With only 750 miles, this Purosangue showcases Ferrari\'s revolutionary active suspension system and all-wheel drive, delivering the pure Ferrari driving experience in a more versatile package.',
+    features: [
+      'Active Suspension System',
+      'Carbon Fiber Roof',
+      'Rear-Hinged Back Doors',
+      'Four Individual Heated Seats',
+      'Ferrari Dynamic Enhancer Plus',
+      'Carbon Ceramic Brakes',
+      'Side Slip Control 7.0',
+      'Manettino Drive Mode Selector',
+      'Premium Sound System',
+      'Advanced Driver Assistance'
+    ],
+    images: [
+      'https://images.pexels.com/photos/337909/pexels-photo-337909.jpeg',
+      'https://images.pexels.com/photos/1035108/pexels-photo-1035108.jpeg',
+      'https://images.pexels.com/photos/2127037/pexels-photo-2127037.jpeg',
+      'https://images.pexels.com/photos/358070/pexels-photo-358070.jpeg'
+    ],
+    status: 'Available'
+  },
+  {
+    id: '8',
+    make: 'Lamborghini',
+    model: 'Urus',
+    year: 2024,
+    price: 235000,
+    mileage: 2800,
+    exteriorColor: 'Giallo Auge',
+    interiorColor: 'Nero Alde',
+    fuelType: 'Petrol',
+    transmission: 'Automatic',
+    engineSize: '4.0L V8 Twin-Turbo',
+    description: 'This Lamborghini Urus combines the soul of a super sports car with the versatility of an SUV. Finished in striking Giallo Auge with Nero Alde interior, this 657-horsepower beast accelerates from 0-60 mph in just 3.3 seconds. With 2,800 miles, this Urus represents the perfect blend of Lamborghini\'s racing heritage and everyday usability, featuring advanced all-wheel drive and multiple driving modes.',
+    features: [
+      'ANIMA Drive Mode Selector',
+      'Active Anti-Roll Bars',
+      'Air Suspension with Six Drive Modes',
+      'Carbon Ceramic Brakes',
+      'Lamborghini Infotainment System III',
+      'Sport Exhaust System',
+      '21-inch Nath Wheels',
+      'Alcantara Sport Seats',
+      'Advanced Driving Dynamics',
+      'Rear-Wheel Steering'
+    ],
+    images: [
+      'https://images.pexels.com/photos/1035108/pexels-photo-1035108.jpeg',
+      'https://images.pexels.com/photos/358070/pexels-photo-358070.jpeg',
+      'https://images.pexels.com/photos/337909/pexels-photo-337909.jpeg',
+      'https://images.pexels.com/photos/2127037/pexels-photo-2127037.jpeg'
+    ],
+    status: 'Available'
+  },
+  {
+    id: '9',
+    make: 'Land Rover',
+    model: 'Defender 110',
+    year: 2024,
+    price: 95000,
+    mileage: 4200,
+    exteriorColor: 'Carpathian Grey',
+    interiorColor: 'Ebony',
+    fuelType: 'Petrol',
+    transmission: 'Automatic',
+    engineSize: '5.0L V8',
+    description: 'This Land Rover Defender 110 represents the perfect fusion of modern luxury and legendary capability. Finished in sophisticated Carpathian Grey with Ebony interior, this V8-powered Defender delivers 518 horsepower while maintaining its iconic rugged character. With 4,200 miles, it features advanced terrain response systems and luxury appointments that make it equally at home in the city or conquering the most challenging terrain.',
+    features: [
+      'Terrain Response 2',
+      'All Terrain Progress Control',
+      'ClearSight Ground View',
+      'Configurable Terrain Response',
+      'Wade Sensing',
+      'Air Suspension',
+      'Pivi Pro Infotainment',
+      '3D Surround Camera',
+      'Premium LED Headlights',
+      'Expedition Roof Rack'
+    ],
+    images: [
+      'https://images.pexels.com/photos/116675/pexels-photo-116675.jpeg',
+      'https://images.pexels.com/photos/1638459/pexels-photo-1638459.jpeg',
+      'https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg',
+      'https://images.pexels.com/photos/244206/pexels-photo-244206.jpeg'
+    ],
+    status: 'Available'
+  },
+  {
+    id: '10',
+    make: 'Range Rover',
+    model: 'Sport',
+    year: 2024,
+    price: 125000,
+    mileage: 3500,
+    exteriorColor: 'Byron Blue',
+    interiorColor: 'Ebony/Ivory',
+    fuelType: 'Petrol',
+    transmission: 'Automatic',
+    engineSize: '4.4L V8',
+    description: 'This Range Rover Sport delivers dynamic performance with luxury refinement. Presented in elegant Byron Blue with Ebony/Ivory interior, this example features the powerful 4.4-liter V8 engine producing 523 horsepower. With 3,500 miles, it combines Range Rover\'s legendary capability with sports car-inspired driving dynamics, making it the perfect choice for those who demand both luxury and performance.',
+    features: [
+      'Dynamic Response Pro',
+      'Meridian Surround Sound System',
+      'Heated and Cooled Seats',
+      'Panoramic Roof',
+      'Hands-Free Power Tailgate',
+      'Digital Instrument Cluster',
+      'Terrain Response 2',
+      'Four-Zone Climate Control',
+      'Matrix LED Headlights',
+      'Mobile Hotspot'
+    ],
+    images: [
+      'https://images.pexels.com/photos/1638459/pexels-photo-1638459.jpeg',
+      'https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg',
+      'https://images.pexels.com/photos/244206/pexels-photo-244206.jpeg',
+      'https://images.pexels.com/photos/116675/pexels-photo-116675.jpeg'
+    ],
+    status: 'Available'
+  },
+  {
+    id: '11',
+    make: 'Bentley',
+    model: 'Bentayga',
+    year: 2024,
+    price: 185000,
+    mileage: 1800,
+    exteriorColor: 'Glacier White',
+    interiorColor: 'Saddle',
+    fuelType: 'Petrol',
+    transmission: 'Automatic',
+    engineSize: '4.0L V8',
+    description: 'This Bentley Bentayga represents the pinnacle of luxury SUV motoring. Finished in pristine Glacier White with handcrafted Saddle leather interior, this example showcases Bentley\'s commitment to craftsmanship and performance. Powered by a twin-turbocharged 4.0-liter V8 engine producing 542 horsepower, with only 1,800 miles, it offers unparalleled luxury, advanced technology, and the versatility expected from the world\'s most luxurious SUV.',
+    features: [
+      'Mulliner Driving Specification',
+      'Naim for Bentley Audio System',
+      'All-Terrain Specification',
+      'Rear Seat Entertainment',
+      'Panoramic Glass Sunroof',
+      'Adaptive Cruise Control',
+      'Bentley Rotating Display',
+      'Massage Function Seats',
+      'Diamond Knurled Gear Lever',
+      'City & Touring Specification'
+    ],
+    images: [
+      'https://images.pexels.com/photos/3764984/pexels-photo-3764984.jpeg',
+      'https://images.pexels.com/photos/3764982/pexels-photo-3764982.jpeg',
+      'https://images.pexels.com/photos/3764979/pexels-photo-3764979.jpeg',
+      'https://images.pexels.com/photos/3764977/pexels-photo-3764977.jpeg'
+    ],
+    status: 'Available'
+  },
+  {
+    id: '12',
+    make: 'Mercedes-Benz',
+    model: 'S-Class S450 4MATIC AMG',
+    year: 2024,
+    price: 155000,
+    mileage: 2900,
+    exteriorColor: 'Designo Diamond Silver',
+    interiorColor: 'Black Nappa Leather',
+    fuelType: 'Petrol',
+    transmission: 'Automatic',
+    engineSize: '3.0L I6 Turbo',
+    description: 'This Mercedes-Benz S450 4MATIC with AMG Line represents the epitome of luxury and technological innovation. Finished in sophisticated Designo Diamond Silver with Black Nappa leather interior, this flagship sedan features a turbocharged 3.0-liter inline-6 engine with EQBoost mild-hybrid technology producing 362 horsepower. With 2,900 miles, it showcases Mercedes-Benz\'s latest MBUX technology and comfort features.',
+    features: [
+      'MBUX Interior Assistant',
+      'Burmester 4D Surround Sound',
+      'Executive Rear Seat Package',
+      'Active Body Control',
+      'Digital Light Technology',
+      'Energizing Comfort Control',
+      'Hot Stone Massage',
+      'Active Ambient Lighting',
+      'Head-Up Display',
+      'Driver Assistance Package'
+    ],
+    images: [
+      'https://images.pexels.com/photos/3457780/pexels-photo-3457780.jpeg',
+      'https://images.pexels.com/photos/3560043/pexels-photo-3560043.jpeg',
+      'https://images.pexels.com/photos/3802513/pexels-photo-3802513.jpeg',
+      'https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg'
+    ],
+    status: 'Available'
+  },
+  {
+    id: '13',
+    make: 'Porsche',
+    model: 'Cayenne',
+    year: 2024,
+    price: 105000,
+    mileage: 3100,
+    exteriorColor: 'Jet Black Metallic',
+    interiorColor: 'Bordeaux Red',
+    fuelType: 'Petrol',
+    transmission: 'Automatic',
+    engineSize: '3.0L V6 Turbo',
+    description: 'This Porsche Cayenne delivers sports car performance in an SUV package. Finished in striking Jet Black Metallic with luxurious Bordeaux Red interior, this example features the turbocharged 3.0-liter V6 engine producing 348 horsepower. With 3,100 miles, it embodies Porsche\'s commitment to driving excellence while offering the practicality and versatility expected from a premium SUV.',
+    features: [
+      'Porsche Active Suspension Management',
+      'Sport Chrono Package',
+      'Bose Surround Sound System',
+      'Panoramic Roof System',
+      'Porsche Communication Management',
+      'Air Suspension',
+      'Lane Keeping Assist',
+      'Adaptive Cruise Control',
+      'ParkAssist',
+      'Multi-Zone Climate Control'
+    ],
+    images: [
+      'https://images.pexels.com/photos/1035108/pexels-photo-1035108.jpeg',
+      'https://images.pexels.com/photos/358070/pexels-photo-358070.jpeg',
+      'https://images.pexels.com/photos/337909/pexels-photo-337909.jpeg',
+      'https://images.pexels.com/photos/2127037/pexels-photo-2127037.jpeg'
+    ],
+    status: 'Available'
+  },
+  {
+    id: '14',
+    make: 'Porsche',
+    model: 'Panamera',
+    year: 2024,
+    price: 145000,
+    mileage: 2400,
+    exteriorColor: 'Crayon',
+    interiorColor: 'Black/Cognac',
+    fuelType: 'Petrol',
+    transmission: 'Automatic',
+    engineSize: '2.9L V6 Twin-Turbo',
+    description: 'This Porsche Panamera represents the perfect fusion of luxury grand touring and sports car performance. Finished in distinctive Crayon with Black/Cognac interior, this four-door sports sedan features a twin-turbocharged 2.9-liter V6 engine producing 325 horsepower. With only 2,400 miles, it offers exceptional comfort for four passengers while maintaining Porsche\'s legendary driving dynamics and build quality.',
+    features: [
+      'Porsche Active Suspension Management',
+      'Sport Chrono Package',
+      'Bose Surround Sound System',
+      'Four-Zone Climate Control',
+      'Porsche Communication Management',
+      'Adaptive Cruise Control',
+      'Lane Change Assist',
+      'ParkAssist with Surround View',
+      'Sport Seats Plus',
+      'Premium Package Plus'
+    ],
+    images: [
+      'https://images.pexels.com/photos/358070/pexels-photo-358070.jpeg',
+      'https://images.pexels.com/photos/337909/pexels-photo-337909.jpeg',
+      'https://images.pexels.com/photos/1035108/pexels-photo-1035108.jpeg',
+      'https://images.pexels.com/photos/2127037/pexels-photo-2127037.jpeg'
+    ],
+    status: 'Available'
+  }
+];

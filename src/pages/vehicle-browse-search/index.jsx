@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+// src/pages/VehicleBrowseSearch/index.jsx
+
+import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import Header from '../../components/ui/Header';
-
 import Button from '../../components/ui/Button';
-
 import FilterPanel from './components/FilterPanel';
 import SearchBar from './components/SearchBar';
 import FilterChips from './components/FilterChips';
@@ -11,6 +11,9 @@ import SortDropdown from './components/SortDropdown';
 import ViewToggle from './components/ViewToggle';
 import VehicleGrid from './components/VehicleGrid';
 import LoadingSpinner from './components/LoadingSpinner';
+
+// ✅ Import external vehicle mock data
+import vehiclesData from '../../data/Vehicles_Data';
 
 const VehicleBrowseSearch = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -35,188 +38,12 @@ const VehicleBrowseSearch = () => {
     bodyType: 'all',
     fuelType: 'all',
     transmission: 'all',
-    condition: 'all',
     year: 'all',
     priceRange: { min: '', max: '' },
     mileageRange: { min: '', max: '' },
     yearRange: { min: '', max: '' },
     features: []
   });
-
-  // Mock vehicle data
-  const mockVehicles = [
-    {
-      id: 1,
-      make: 'Mercedes-Benz',
-      model: 'C-Class',
-      variant: 'C300 AMG Line',
-      year: 2023,
-      price: 8500000,
-      originalPrice: 9200000,
-      mileage: 15000,
-      fuelType: 'Petrol',
-      transmission: 'Automatic',
-      bodyType: 'Sedan',
-      condition: 'used',
-      location: 'Nairobi',
-      status: 'available',
-      images: [
-        'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1617788138017-80ad40651399?w=800&h=600&fit=crop'
-      ],
-      keyFeatures: ['Leather Seats', 'Sunroof', 'Navigation System', 'Backup Camera', 'Bluetooth'],
-      listedDate: '2 days ago',
-      popularity: 95
-    },
-    {
-      id: 2,
-      make: 'BMW',
-      model: '5 Series',
-      variant: '530i M Sport',
-      year: 2022,
-      price: 7800000,
-      mileage: 28000,
-      fuelType: 'Petrol',
-      transmission: 'Automatic',
-      bodyType: 'Sedan',
-      condition: 'used',
-      location: 'Mombasa',
-      status: 'available',
-      images: [
-        'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1617788138017-80ad40651399?w=800&h=600&fit=crop'
-      ],
-      keyFeatures: ['Heated Seats', 'Premium Sound', 'Keyless Entry', 'Cruise Control'],
-      listedDate: '1 week ago',
-      popularity: 88
-    },
-    {
-      id: 3,
-      make: 'Audi',
-      model: 'Q5',
-      variant: '45 TFSI Quattro',
-      year: 2023,
-      price: 9200000,
-      mileage: 8500,
-      fuelType: 'Petrol',
-      transmission: 'Automatic',
-      bodyType: 'SUV',
-      condition: 'used',
-      location: 'Nairobi',
-      status: 'reserved',
-      images: [
-        'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800&h=600&fit=crop'
-      ],
-      keyFeatures: ['All-Wheel Drive', 'Virtual Cockpit', 'Matrix LED', 'Parking Sensors'],
-      listedDate: '3 days ago',
-      popularity: 92
-    },
-    {
-      id: 4,
-      make: 'Lexus',
-      model: 'RX',
-      variant: 'RX 350 F Sport',
-      year: 2022,
-      price: 8900000,
-      mileage: 22000,
-      fuelType: 'Petrol',
-      transmission: 'Automatic',
-      bodyType: 'SUV',
-      condition: 'used',
-      location: 'Kisumu',
-      status: 'available',
-      images: [
-        'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=800&h=600&fit=crop'
-      ],
-      keyFeatures: ['Hybrid System', 'Mark Levinson Audio', 'Safety System+', 'Wireless Charging'],
-      listedDate: '5 days ago',
-      popularity: 85
-    },
-    {
-      id: 5,
-      make: 'Jaguar',
-      model: 'F-PACE',
-      variant: 'P300 R-Dynamic',
-      year: 2023,
-      price: 10500000,
-      mileage: 12000,
-      fuelType: 'Petrol',
-      transmission: 'Automatic',
-      bodyType: 'SUV',
-      condition: 'used',
-      location: 'Nairobi',
-      status: 'available',
-      images: [
-        'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&h=600&fit=crop'
-      ],
-      keyFeatures: ['Meridian Sound', 'Terrain Response', 'Activity Key', 'Gesture Tailgate'],
-      listedDate: '1 day ago',
-      popularity: 78
-    },
-    {
-      id: 6,
-      make: 'Porsche',
-      model: 'Macan',
-      variant: 'Macan S',
-      year: 2023,
-      price: 12800000,
-      mileage: 5500,
-      fuelType: 'Petrol',
-      transmission: 'Automatic',
-      bodyType: 'SUV',
-      condition: 'used',
-      location: 'Nairobi',
-      status: 'available',
-      images: [
-        'https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?w=800&h=600&fit=crop'
-      ],
-      keyFeatures: ['Sport Chrono', 'PASM', 'Bose Audio', 'Panoramic Roof'],
-      listedDate: '4 hours ago',
-      popularity: 96
-    },
-    {
-      id: 7,
-      make: 'Land Rover',
-      model: 'Range Rover Evoque',
-      variant: 'P250 R-Dynamic',
-      year: 2022,
-      price: 7500000,
-      mileage: 35000,
-      fuelType: 'Petrol',
-      transmission: 'Automatic',
-      bodyType: 'SUV',
-      condition: 'used',
-      location: 'Eldoret',
-      status: 'available',
-      images: [
-        'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&h=600&fit=crop'
-      ],
-      keyFeatures: ['Terrain Response 2', 'ClearSight', 'Touch Pro Duo', 'Wade Sensing'],
-      listedDate: '1 week ago',
-      popularity: 82
-    },
-    {
-      id: 8,
-      make: 'Volvo',
-      model: 'XC90',
-      variant: 'T6 Inscription',
-      year: 2023,
-      price: 11200000,
-      mileage: 18000,
-      fuelType: 'Hybrid',
-      transmission: 'Automatic',
-      bodyType: 'SUV',
-      condition: 'used',
-      location: 'Nairobi',
-      status: 'available',
-      images: [
-        'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800&h=600&fit=crop'
-      ],
-      keyFeatures: ['Pilot Assist', 'Bowers & Wilkins', 'Air Suspension', 'Crystal Gear Shifter'],
-      listedDate: '2 days ago',
-      popularity: 89
-    }
-  ];
 
   // Load initial data
   useEffect(() => {
@@ -225,8 +52,8 @@ const VehicleBrowseSearch = () => {
       try {
         // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 1000));
-        setVehicles(mockVehicles);
-        setFilteredVehicles(mockVehicles);
+        setVehicles(vehiclesData);
+        setFilteredVehicles(vehiclesData);
       } catch (error) {
         console.error('Error loading vehicles:', error);
       } finally {
@@ -254,8 +81,7 @@ const VehicleBrowseSearch = () => {
       filtered = filtered?.filter(vehicle =>
         vehicle?.make?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
         vehicle?.model?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
-        vehicle?.variant?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
-        vehicle?.keyFeatures?.some(feature => 
+        vehicle?.features?.some(feature => 
           feature?.toLowerCase()?.includes(searchTerm?.toLowerCase())
         )
       );
@@ -286,10 +112,6 @@ const VehicleBrowseSearch = () => {
 
     if (filters?.transmission !== 'all') {
       filtered = filtered?.filter(vehicle => vehicle?.transmission?.toLowerCase() === filters?.transmission);
-    }
-
-    if (filters?.condition !== 'all') {
-      filtered = filtered?.filter(vehicle => vehicle?.condition === filters?.condition);
     }
 
     if (filters?.year !== 'all') {
@@ -324,7 +146,7 @@ const VehicleBrowseSearch = () => {
     if (filters?.features && filters?.features?.length > 0) {
       filtered = filtered?.filter(vehicle =>
         filters?.features?.every(feature =>
-          vehicle?.keyFeatures?.includes(feature)
+          vehicle?.features?.includes(feature)
         )
       );
     }
@@ -344,12 +166,10 @@ const VehicleBrowseSearch = () => {
           return a?.mileage - b?.mileage;
         case 'mileage-high':
           return b?.mileage - a?.mileage;
-        case 'popularity':
-          return b?.popularity - a?.popularity;
         case 'date-new':
           return new Date(b.listedDate) - new Date(a.listedDate);
         default:
-          return b?.popularity - a?.popularity; // relevance
+          return new Date(b.listedDate) - new Date(a.listedDate); // fallback relevance
       }
     });
 
@@ -405,7 +225,6 @@ const VehicleBrowseSearch = () => {
       bodyType: 'all',
       fuelType: 'all',
       transmission: 'all',
-      condition: 'all',
       year: 'all',
       priceRange: { min: '', max: '' },
       mileageRange: { min: '', max: '' },
@@ -436,7 +255,7 @@ const VehicleBrowseSearch = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
       // Simulate data refresh
-      setVehicles([...mockVehicles]);
+      setVehicles([...vehiclesData]);
     } catch (error) {
       console.error('Error refreshing data:', error);
     } finally {

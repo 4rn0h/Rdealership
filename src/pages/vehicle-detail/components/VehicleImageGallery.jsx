@@ -1,3 +1,4 @@
+//src/pages/vehicles-detail/components/VehicleImageGallary.jsx
 import React, { useState } from 'react';
 import Icon from '../../../components/AppIcon';
 import Image from '../../../components/AppImage';

@@ -14,22 +14,25 @@ const VehicleCard = ({ vehicle, onFavoriteToggle, isFavorited = false, viewMode 
 
   const handleFavoriteClick = (e) => {
     e?.stopPropagation();
-    onFavoriteToggle(vehicle?.id);
+    onFavoriteToggle?.(vehicle?.id);
   };
 
   const formatPrice = (price, currency = 'KES') => {
+    if (!price) return 'Price on Request';
     return new Intl.NumberFormat('en-KE', {
       style: 'currency',
-      currency: currency,
+      currency,
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
-    })?.format(price);
+    }).format(price);
   };
 
   const formatMileage = (mileage) => {
-    return new Intl.NumberFormat('en-KE')?.format(mileage);
+    if (!mileage) return '—';
+    return new Intl.NumberFormat('en-KE').format(mileage);
   };
 
+  // ✅ List View
   if (viewMode === 'list') {
     return (
       <div className="bg-card border border-border rounded-lg luxury-shadow-subtle hover:luxury-shadow-medium luxury-transition overflow-hidden">
@@ -47,28 +50,30 @@ const VehicleCard = ({ vehicle, onFavoriteToggle, isFavorited = false, viewMode 
                 <Icon name="Car" size={32} className="text-muted-foreground" />
               </div>
             )}
-            
+
             {/* Favorite Button */}
             <button
               onClick={handleFavoriteClick}
               className="absolute top-3 right-3 w-10 h-10 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-background luxury-micro-transition"
             >
-              <Icon 
-                name={isFavorited ? "Heart" : "Heart"} 
-                size={20} 
+              <Icon
+                name="Heart"
+                size={20}
                 className={isFavorited ? "text-error fill-current" : "text-muted-foreground hover:text-error"}
               />
             </button>
 
             {/* Status Badge */}
-            {vehicle?.status && vehicle?.status !== 'available' && (
+            {vehicle?.status && vehicle?.status !== 'Available' && (
               <div className="absolute top-3 left-3">
                 <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                  vehicle?.status === 'sold' ? 'bg-error text-error-foreground' :
-                  vehicle?.status === 'reserved' ? 'bg-warning text-warning-foreground' :
-                  'bg-accent text-accent-foreground'
+                  vehicle?.status === 'Sold'
+                    ? 'bg-error text-error-foreground'
+                    : vehicle?.status === 'Reserved'
+                    ? 'bg-warning text-warning-foreground'
+                    : 'bg-accent text-accent-foreground'
                 }`}>
-                  {vehicle?.status?.charAt(0)?.toUpperCase() + vehicle?.status?.slice(1)}
+                  {vehicle?.status}
                 </span>
               </div>
             )}
@@ -85,18 +90,13 @@ const VehicleCard = ({ vehicle, onFavoriteToggle, isFavorited = false, viewMode 
                       {vehicle?.year} {vehicle?.make} {vehicle?.model}
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      {vehicle?.variant || vehicle?.trim}
+                      {vehicle?.engineSize}
                     </p>
                   </div>
                   <div className="text-right">
                     <p className="text-2xl font-heading font-bold text-accent">
                       {formatPrice(vehicle?.price)}
                     </p>
-                    {vehicle?.originalPrice && vehicle?.originalPrice > vehicle?.price && (
-                      <p className="text-sm text-muted-foreground line-through">
-                        {formatPrice(vehicle?.originalPrice)}
-                      </p>
-                    )}
                   </div>
                 </div>
 
@@ -123,16 +123,16 @@ const VehicleCard = ({ vehicle, onFavoriteToggle, isFavorited = false, viewMode 
                   <div className="flex items-center space-x-2">
                     <Icon name="Car" size={16} className="text-accent" />
                     <span className="text-sm text-foreground">
-                      {vehicle?.bodyType}
+                      {vehicle?.bodyType || "Luxury Vehicle"}
                     </span>
                   </div>
                 </div>
 
-                {/* Features */}
-                {vehicle?.keyFeatures && vehicle?.keyFeatures?.length > 0 && (
+                {/* Key Features */}
+                {vehicle?.features && vehicle?.features.length > 0 && (
                   <div className="mb-4">
                     <div className="flex flex-wrap gap-2">
-                      {vehicle?.keyFeatures?.slice(0, 4)?.map((feature, index) => (
+                      {vehicle?.features.slice(0, 4).map((feature, index) => (
                         <span
                           key={index}
                           className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full"
@@ -140,9 +140,9 @@ const VehicleCard = ({ vehicle, onFavoriteToggle, isFavorited = false, viewMode 
                           {feature}
                         </span>
                       ))}
-                      {vehicle?.keyFeatures?.length > 4 && (
+                      {vehicle?.features.length > 4 && (
                         <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full">
-                          +{vehicle?.keyFeatures?.length - 4} more
+                          +{vehicle?.features.length - 4} more
                         </span>
                       )}
                     </div>
@@ -159,7 +159,7 @@ const VehicleCard = ({ vehicle, onFavoriteToggle, isFavorited = false, viewMode 
                   </div>
                   <div className="flex items-center space-x-1">
                     <Icon name="Calendar" size={14} />
-                    <span>Listed {vehicle?.listedDate}</span>
+                    <span>{vehicle?.listedDate || "Recently Listed"}</span>
                   </div>
                 </div>
                 <Button
@@ -178,7 +178,7 @@ const VehicleCard = ({ vehicle, onFavoriteToggle, isFavorited = false, viewMode 
     );
   }
 
-  // Grid View (Default)
+  // ✅ Grid View
   return (
     <div className="bg-card border border-border rounded-lg luxury-shadow-subtle hover:luxury-shadow-medium luxury-transition overflow-hidden group">
       {/* Image Section */}
@@ -194,28 +194,30 @@ const VehicleCard = ({ vehicle, onFavoriteToggle, isFavorited = false, viewMode 
             <Icon name="Car" size={32} className="text-muted-foreground" />
           </div>
         )}
-        
+
         {/* Favorite Button */}
         <button
           onClick={handleFavoriteClick}
           className="absolute top-3 right-3 w-10 h-10 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-background luxury-micro-transition opacity-0 group-hover:opacity-100"
         >
-          <Icon 
-            name={isFavorited ? "Heart" : "Heart"} 
-            size={20} 
+          <Icon
+            name="Heart"
+            size={20}
             className={isFavorited ? "text-error fill-current" : "text-muted-foreground hover:text-error"}
           />
         </button>
 
         {/* Status Badge */}
-        {vehicle?.status && vehicle?.status !== 'available' && (
+        {vehicle?.status && vehicle?.status !== 'Available' && (
           <div className="absolute top-3 left-3">
             <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-              vehicle?.status === 'sold' ? 'bg-error text-error-foreground' :
-              vehicle?.status === 'reserved' ? 'bg-warning text-warning-foreground' :
-              'bg-accent text-accent-foreground'
+              vehicle?.status === 'Sold'
+                ? 'bg-error text-error-foreground'
+                : vehicle?.status === 'Reserved'
+                ? 'bg-warning text-warning-foreground'
+                : 'bg-accent text-accent-foreground'
             }`}>
-              {vehicle?.status?.charAt(0)?.toUpperCase() + vehicle?.status?.slice(1)}
+              {vehicle?.status}
             </span>
           </div>
         )}
@@ -230,6 +232,7 @@ const VehicleCard = ({ vehicle, onFavoriteToggle, isFavorited = false, viewMode 
           </div>
         )}
       </div>
+
       {/* Content Section */}
       <div className="p-4">
         {/* Header */}
@@ -238,7 +241,7 @@ const VehicleCard = ({ vehicle, onFavoriteToggle, isFavorited = false, viewMode 
             {vehicle?.year} {vehicle?.make} {vehicle?.model}
           </h3>
           <p className="text-sm text-muted-foreground line-clamp-1">
-            {vehicle?.variant || vehicle?.trim}
+            {vehicle?.engineSize}
           </p>
         </div>
 
@@ -247,11 +250,6 @@ const VehicleCard = ({ vehicle, onFavoriteToggle, isFavorited = false, viewMode 
           <p className="text-xl font-heading font-bold text-accent">
             {formatPrice(vehicle?.price)}
           </p>
-          {vehicle?.originalPrice && vehicle?.originalPrice > vehicle?.price && (
-            <p className="text-sm text-muted-foreground line-through">
-              {formatPrice(vehicle?.originalPrice)}
-            </p>
-          )}
         </div>
 
         {/* Key Specs */}
@@ -269,8 +267,8 @@ const VehicleCard = ({ vehicle, onFavoriteToggle, isFavorited = false, viewMode 
             <span className="text-foreground">{vehicle?.transmission}</span>
           </div>
           <div className="flex items-center space-x-1">
-            <Icon name="MapPin" size={14} className="text-accent" />
-            <span className="text-foreground">{vehicle?.location}</span>
+            <Icon name="Car" size={14} className="text-accent" />
+            <span className="text-foreground">{vehicle?.bodyType || "Luxury Vehicle"}</span>
           </div>
         </div>
 
