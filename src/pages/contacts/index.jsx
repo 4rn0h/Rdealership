@@ -78,42 +78,42 @@ const Contacts = () => {
   return (
     <div className="pt-24 pb-16">
       {/* Hero Section */}
-      <div className="bg-primary text-white py-12 mb-12">
-        <div className="container-custom">
+      <div className="bg-primary text-primary-foreground py-12 mb-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl md:text-5xl font-heading font-medium mb-4">
             Contact Us
           </h1>
-          <p className="text-xl text-gray-300 max-w-3xl">
+          <p className="text-xl text-primary-foreground/80 max-w-3xl">
             We're here to answer any questions you may have about our luxury
             vehicles and services.
           </p>
         </div>
       </div>
 
-      <div className="container-custom">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center space-y-8">
           {/* Contact Form */}
           <div className="w-full max-w-2xl">
-            <div className="bg-muted p-8 rounded-lg shadow-md">
+            <div className="bg-card p-8 rounded-lg shadow-md">
               <h2 className="text-2xl font-medium mb-6 text-primary">
                 Get in Touch
               </h2>
 
               {isSubmitted ? (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Send className="text-cta w-8 h-8" />
+                <div className="bg-success/20 border border-success/30 rounded-lg p-6 text-center">
+                  <div className="w-16 h-16 bg-success/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Send className="text-success w-8 h-8" />
                   </div>
-                  <h3 className="text-2xl font-medium text-green-800 mb-2">
+                  <h3 className="text-2xl font-medium text-success mb-2">
                     Message Sent Successfully!
                   </h3>
-                  <p className="text-green-700 mb-4">
+                  <p className="text-success/90 mb-4">
                     Thank you for contacting us. Our team will get back to you
                     shortly.
                   </p>
                   <button
                     onClick={() => setIsSubmitted(false)}
-                    className="btn btn-primary mt-2"
+                    className="luxury-gradient text-primary-foreground px-6 py-3 rounded-lg luxury-shadow-subtle hover:luxury-shadow-medium luxury-transition"
                   >
                     Send Another Message
                   </button>
@@ -134,12 +134,12 @@ const Contacts = () => {
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
-                        className={`w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-cta/50 text-primary ${
-                          errors.name ? "border-red-500" : "border-gray-300"
+                        className={`w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-accent/50 text-primary bg-input ${
+                          errors.name ? "border-error" : "border-border"
                         }`}
                       />
                       {errors.name && (
-                        <p className="text-red-500 text-sm mt-1">
+                        <p className="text-error text-sm mt-1">
                           {errors.name}
                         </p>
                       )}
@@ -157,12 +157,12 @@ const Contacts = () => {
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                        className={`w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-cta/50 text-primary ${
-                          errors.email ? "border-red-500" : "border-gray-300"
+                        className={`w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-accent/50 text-primary bg-input ${
+                          errors.email ? "border-error" : "border-border"
                         }`}
                       />
                       {errors.email && (
-                        <p className="text-red-500 text-sm mt-1">
+                        <p className="text-error text-sm mt-1">
                           {errors.email}
                         </p>
                       )}
@@ -182,12 +182,12 @@ const Contacts = () => {
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
-                        className={`w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-cta/50 text-primary ${
-                          errors.phone ? "border-red-500" : "border-gray-300"
+                        className={`w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-accent/50 text-primary bg-input ${
+                          errors.phone ? "border-error" : "border-border"
                         }`}
                       />
                       {errors.phone && (
-                        <p className="text-red-500 text-sm mt-1">
+                        <p className="text-error text-sm mt-1">
                           {errors.phone}
                         </p>
                       )}
@@ -205,7 +205,7 @@ const Contacts = () => {
                         name="subject"
                         value={formData.subject}
                         onChange={handleChange}
-                        className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cta/50 text-primary"
+                        className="w-full p-3 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent/50 text-primary bg-input"
                       />
                     </div>
                   </div>
@@ -222,12 +222,12 @@ const Contacts = () => {
                       rows={5}
                       value={formData.message}
                       onChange={handleChange}
-                      className={`w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-cta/50 text-primary ${
-                        errors.message ? "border-red-500" : "border-gray-300"
+                      className={`w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-accent/50 text-primary bg-input ${
+                        errors.message ? "border-error" : "border-border"
                       }`}
                     ></textarea>
                     {errors.message && (
-                      <p className="text-red-500 text-sm mt-1">
+                      <p className="text-error text-sm mt-1">
                         {errors.message}
                       </p>
                     )}
@@ -235,7 +235,7 @@ const Contacts = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="btn btn-primary"
+                    className="luxury-gradient text-primary-foreground px-6 py-3 rounded-lg luxury-shadow-subtle hover:luxury-shadow-medium luxury-transition w-full"
                   >
                     {isSubmitting ? "Sending..." : "Send Message"}
                   </button>
@@ -246,27 +246,29 @@ const Contacts = () => {
 
           {/* Contact Information + Socials */}
           <div className="w-full max-w-2xl space-y-8">
-            <div className="bg-muted p-8 rounded-lg shadow-md">
+            <div className="bg-card p-8 rounded-lg shadow-md">
               <h2 className="text-2xl font-medium mb-6 text-primary">
                 Contact Information
               </h2>
               <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                 {/* Phone */}
                 <li className="flex items-start">
-                  <Phone className="w-5 h-5 text-accent mt-1 mr-3" />
+                  <div className="bg-accent/20 text-accent p-2 rounded-full mt-0.5 mr-3">
+                    <Phone className="w-4 h-4" />
+                  </div>
                   <div>
                     <p className="font-medium text-primary">Phone</p>
                     <p className="text-primary mb-1">UK Office:</p>
                     <a
                       href="tel:+447964595923"
-                      className="text-cta hover:underline"
+                      className="text-accent hover:underline luxury-hover-gold"
                     >
                       +44 7964 595923
                     </a>
                     <p className="text-primary mt-2 mb-1">East Africa Office:</p>
                     <a
                       href="tel:+254710966523"
-                      className="text-cta hover:underline"
+                      className="text-accent hover:underline luxury-hover-gold"
                     >
                       +254 710 966523
                     </a>
@@ -275,28 +277,32 @@ const Contacts = () => {
 
                 {/* Email */}
                 <li className="flex items-start">
-                  <Mail className="w-5 h-5 text-accent mt-1 mr-3" />
+                  <div className="bg-accent/20 text-accent p-2 rounded-full mt-0.5 mr-3">
+                    <Mail className="w-4 h-4" />
+                  </div>
                   <div>
                     <p className="font-medium text-primary">Email</p>
                     <a
                       href="mailto:info@royamotorsuk.com"
-                      className="text-cta hover:underline"
+                      className="text-accent hover:underline luxury-hover-gold"
                     >
                       info@royamotorsuk.com
                     </a>
                     <p className="text-primary mt-2 mb-1">For inquiries:</p>
                     <a
                       href="mailto:sales@royamotorsuk.com"
-                      className="text-cta hover:underline"
+                      className="text-accent hover:underline luxury-hover-gold"
                     >
                       sales@royamotorsuk.com
                     </a>
                   </div>
                 </li>
 
-                {/* UK Headquarters (only UK here now) */}
+                {/* UK Headquarters */}
                 <li className="flex items-start">
-                  <MapPin className="w-5 h-5 text-accent mt-1 mr-3" />
+                  <div className="bg-accent/20 text-accent p-2 rounded-full mt-0.5 mr-3">
+                    <MapPin className="w-4 h-4" />
+                  </div>
                   <div>
                     <p className="font-medium text-primary mb-1">
                       UK Headquarters
@@ -311,9 +317,11 @@ const Contacts = () => {
                   </div>
                 </li>
 
-                {/* East Africa Office moved here */}
+                {/* East Africa Office */}
                 <li className="flex items-start">
-                  <MapPin className="w-5 h-5 text-accent mt-1 mr-3" />
+                  <div className="bg-accent/20 text-accent p-2 rounded-full mt-0.5 mr-3">
+                    <MapPin className="w-4 h-4" />
+                  </div>
                   <div>
                     <p className="font-medium text-primary mb-1">
                       East Africa Office
@@ -331,7 +339,7 @@ const Contacts = () => {
             </div>
 
             {/* Socials */}
-            <div className="bg-muted p-8 rounded-lg shadow-md">
+            <div className="bg-card p-8 rounded-lg shadow-md">
               <h2 className="text-2xl font-medium mb-6 text-primary">
                 Connect With Us
               </h2>
@@ -340,7 +348,7 @@ const Contacts = () => {
                   href="https://facebook.com/RoyaMotorsUK"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700 transition-colors"
+                  className="bg-primary text-primary-foreground p-3 rounded-full hover:bg-primary/90 luxury-transition"
                   aria-label="Facebook"
                 >
                   <Facebook className="w-5 h-5" />
@@ -349,7 +357,7 @@ const Contacts = () => {
                   href="https://instagram.com/RoyaMotorsUK"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-pink-600 text-white p-3 rounded-full hover:bg-pink-700 transition-colors"
+                  className="bg-primary text-primary-foreground p-3 rounded-full hover:bg-primary/90 luxury-transition"
                   aria-label="Instagram"
                 >
                   <Instagram className="w-5 h-5" />
@@ -358,7 +366,7 @@ const Contacts = () => {
                   href="https://twitter.com/RoyaMotorsUK"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-blue-400 text-white p-3 rounded-full hover:bg-blue-500 transition-colors"
+                  className="bg-primary text-primary-foreground p-3 rounded-full hover:bg-primary/90 luxury-transition"
                   aria-label="Twitter"
                 >
                   <Twitter className="w-5 h-5" />
@@ -367,7 +375,7 @@ const Contacts = () => {
                   href="https://wa.me/447964595923"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-green-600 text-white p-3 rounded-full hover:bg-green-700 transition-colors"
+                  className="bg-success text-success-foreground p-3 rounded-full hover:bg-success/90 luxury-transition"
                   aria-label="WhatsApp"
                 >
                   <MessageCircle className="w-5 h-5" />
@@ -377,7 +385,7 @@ const Contacts = () => {
                 href="https://wa.me/447964595923"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn bg-green-600 hover:bg-green-700 text-white w-full flex items-center justify-center"
+                className="luxury-gradient text-primary-foreground px-6 py-3 rounded-lg luxury-shadow-subtle hover:luxury-shadow-medium luxury-transition w-full flex items-center justify-center"
               >
                 <MessageCircle size={20} className="mr-2" />
                 Chat on WhatsApp

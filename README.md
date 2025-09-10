@@ -13,7 +13,10 @@ A modern React-based project utilizing the latest frontend technologies and tool
 - **Form Management** - React Hook Form for efficient form handling
 - **Animation** - Framer Motion for smooth UI animations
 - **Testing** - Jest and React Testing Library setup
+
 ## Key Additions to vehicles details page
+**Framer Motion** – Smooth animations and transitions
+**Reusable UI System** – Centralized `components/ui/` with toasts, headers, icons
 **Dynamic Vehicles Data**:
   - Centralized `vehiclesData.jsx` for flat vehicle records
   - Separate `vehicle_Specs.jsx` for grouped technical specifications

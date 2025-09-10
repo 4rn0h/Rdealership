@@ -74,7 +74,7 @@ const VehicleActions = ({ vehicle, isFavorite, onToggleFavorite, isAuthenticated
       `Hi, I'm interested in the ${vehicleName}. Could you please provide more information?`
     );
     const whatsappNumber =
-      import.meta.env.VITE_WHATSAPP_NUMBER || "254700123456"; // placeholder
+      import.meta.env.VITE_WHATSAPP_NUMBER || "+44 7964 595923"; // placeholder
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
     window.open(whatsappUrl, "_blank");
   };
