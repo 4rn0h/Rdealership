@@ -12,26 +12,30 @@ const FavoriteVehicleCard = ({ vehicle, onRemoveFavorite, onPriceAlert }) => {
   };
 
   const formatPrice = (price, currency) => {
+    if (!price || !currency) return '';
     return new Intl.NumberFormat('en-KE', {
       style: 'currency',
       currency: currency,
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
-    })?.format(price);
+    }).format(price);
   };
+
+  // Construct fallback-friendly vehicle name
+  const vehicleName = `${vehicle?.year || ''} ${vehicle?.make || ''} ${vehicle?.model || ''}`.trim();
 
   return (
     <div className="bg-card border border-border rounded-lg overflow-hidden luxury-shadow-subtle hover:luxury-shadow-medium luxury-transition group">
       <div className="relative">
         <div className="aspect-video overflow-hidden">
           <Image
-            src={vehicle?.image}
-            alt={vehicle?.name}
+            src={vehicle?.images?.[0]}
+            alt={vehicleName}
             className="w-full h-full object-cover group-hover:scale-105 luxury-transition"
           />
         </div>
-        
-        {/* Price Alert Badge */}
+
+        {/* Price Alert Badge (optional, only if dataset supports later) */}
         {vehicle?.priceDropAlert && (
           <div className="absolute top-3 left-3 bg-success text-success-foreground px-2 py-1 rounded-full text-xs font-medium flex items-center space-x-1">
             <Icon name="TrendingDown" size={12} />
@@ -47,32 +51,38 @@ const FavoriteVehicleCard = ({ vehicle, onRemoveFavorite, onPriceAlert }) => {
           <Icon name="Heart" size={16} className="text-error fill-current" />
         </button>
       </div>
+
       <div className="p-4">
         <div className="mb-3">
           <h3 className="font-heading font-semibold text-foreground mb-1 line-clamp-1">
-            {vehicle?.name}
+            {vehicleName}
           </h3>
+
           <p className="text-sm text-muted-foreground mb-2">
-            {vehicle?.year} • {vehicle?.mileage} km • {vehicle?.fuelType}
+            {vehicle?.year} 
+            {vehicle?.fuelType && <> • {vehicle?.fuelType}</>}
+            {vehicle?.mileage && <> • {vehicle?.mileage} km</>}
           </p>
-          
+
           <div className="flex items-center justify-between">
             <div>
               <p className="text-lg font-bold text-accent">
                 {formatPrice(vehicle?.price, vehicle?.currency)}
               </p>
+
               {vehicle?.originalPrice && vehicle?.originalPrice > vehicle?.price && (
                 <p className="text-sm text-muted-foreground line-through">
                   {formatPrice(vehicle?.originalPrice, vehicle?.currency)}
                 </p>
               )}
             </div>
-            
+
             <button
               onClick={() => onPriceAlert(vehicle?.id)}
               className={`p-2 rounded-lg luxury-micro-transition ${
                 vehicle?.priceAlertEnabled
-                  ? 'bg-accent/10 text-accent' :'bg-muted text-muted-foreground hover:text-foreground'
+                  ? 'bg-accent/10 text-accent'
+                  : 'bg-muted text-muted-foreground hover:text-foreground'
               }`}
               title={vehicle?.priceAlertEnabled ? 'Price alerts enabled' : 'Enable price alerts'}
             >

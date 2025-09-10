@@ -1,4 +1,3 @@
-// src/data/Dashboard_Data.jsx
 import vehiclesData from './Vehicles_Data';
 
 // ✅ Quick Actions
@@ -69,7 +68,7 @@ export const mockNotificationPreferences = {
   emailFrequency: "daily",
 };
 
-// ✅ Price Alerts (using local images from Vehicles_Data.jsx)
+// ✅ Price Alerts
 export const mockPriceAlerts = [
   {
     id: "PA001",
@@ -90,7 +89,7 @@ export const mockPriceAlerts = [
     vehicle: {
       id: 6,
       name: "Jaguar F-PACE SVR",
-      image: "/assets/images/vehicles/Land Rover Defender 110.jpeg", // placeholder in Vehicles_Data
+      image: "/assets/images/vehicles/Land Rover Defender 110.jpeg", // placeholder
     },
     currentPrice: 14800000,
     targetPrice: 14500000,
@@ -100,20 +99,20 @@ export const mockPriceAlerts = [
   },
 ];
 
-// ✅ Recent Activities (aligned with Vehicles_Data.jsx)
+// ✅ Recent Activities
 export const mockActivities = [
   {
-    id: 1,
+    id: "A001",
     type: "vehicle_viewed",
     vehicle: {
       id: 1,
       name: "BMW X7 xDrive40i",
-      image: "/assets/images/vehicles/2021 Rolls Royce Ghost.jpg", // placeholder in Vehicles_Data
+      image: "/assets/images/vehicles/2021 Rolls Royce Ghost.jpg", // placeholder
     },
     timestamp: "2025-01-12T15:30:00Z",
   },
   {
-    id: 2,
+    id: "A002",
     type: "vehicle_favorited",
     vehicle: {
       id: 2,
@@ -123,22 +122,78 @@ export const mockActivities = [
     timestamp: "2025-01-12T14:15:00Z",
   },
   {
-    id: 3,
+    id: "A003",
     type: "inquiry_sent",
     vehicle: {
       id: 4,
       name: "Range Rover Vogue",
-      image: "/assets/images/vehicles/Range Rover Sport.jpeg", // placeholder in Vehicles_Data
+      image: "/assets/images/vehicles/Range Rover Sport.jpeg",
     },
     timestamp: "2025-01-11T09:15:00Z",
   },
   {
-    id: 4,
+    id: "A004",
     type: "search_saved",
     searchQuery: "BMW X Series under 15M KES",
     timestamp: "2025-01-10T18:45:00Z",
   },
 ];
 
+// ✅ Favorite Vehicles
+export const mockFavoriteVehicles = vehiclesData.slice(0, 4).map((v) => ({
+  ...v,
+  priceAlertEnabled: false,
+}));
 
+// ✅ Inquiries
+export const mockInquiries = [
+  {
+    id: "INQ001",
+    vehicle: vehiclesData[0],
+    status: "pending",
+    message: "Is this available for financing?",
+    createdAt: "2025-01-09T10:30:00Z",
+    responseCount: 0,
+  },
+  {
+    id: "INQ002",
+    vehicle: vehiclesData[1],
+    status: "responded",
+    message: "Can I get a test drive slot for next week?",
+    createdAt: "2025-01-08T09:15:00Z",
+    responseCount: 1,
+  },
+  {
+    id: "INQ003",
+    vehicle: vehiclesData[2],
+    status: "closed",
+    message: "Any deals available on this?",
+    createdAt: "2025-01-07T16:45:00Z",
+    responseCount: 2,
+  },
+];
 
+// ✅ Test Drives
+export const mockTestDrives = [
+  {
+    id: "TD001",
+    vehicle: vehiclesData[3],
+    status: "scheduled",
+    date: "2025-01-15",
+    time: "10:00:00",
+  },
+  {
+    id: "TD002",
+    vehicle: vehiclesData[4],
+    status: "completed",
+    date: "2025-01-05",
+    time: "14:30:00",
+  },
+  {
+    id: "TD003",
+    vehicle: vehiclesData[5],
+    status: "canceled",
+    date: "2025-01-06",
+    time: "11:00:00",
+  },
+];

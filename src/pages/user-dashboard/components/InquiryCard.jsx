@@ -13,22 +13,29 @@ const InquiryCard = ({ inquiry }) => {
         color: 'text-warning',
         bgColor: 'bg-warning/10',
         icon: 'Clock',
-        label: 'Pending Response'
+        label: 'Pending Response',
       },
       responded: {
         color: 'text-success',
         bgColor: 'bg-success/10',
         icon: 'CheckCircle',
-        label: 'Responded'
+        label: 'Responded',
       },
       closed: {
         color: 'text-muted-foreground',
         bgColor: 'bg-muted',
         icon: 'XCircle',
-        label: 'Closed'
-      }
+        label: 'Closed',
+      },
     };
-    return configs?.[status] || configs?.pending;
+    return (
+      configs?.[status] || {
+        color: 'text-gray-500',
+        bgColor: 'bg-gray-100',
+        icon: 'HelpCircle',
+        label: 'Unknown',
+      }
+    );
   };
 
   const formatDate = (date) => {
@@ -37,7 +44,7 @@ const InquiryCard = ({ inquiry }) => {
       month: 'short',
       year: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     })?.format(new Date(date));
   };
 
@@ -49,8 +56,8 @@ const InquiryCard = ({ inquiry }) => {
         {/* Vehicle Image */}
         <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
           <Image
-            src={inquiry?.vehicle?.image}
-            alt={inquiry?.vehicle?.name}
+            src={inquiry?.vehicle?.images?.[0]}
+            alt={`${inquiry?.vehicle?.year} ${inquiry?.vehicle?.make} ${inquiry?.vehicle?.model}`}
             className="w-full h-full object-cover"
           />
         </div>
@@ -60,21 +67,24 @@ const InquiryCard = ({ inquiry }) => {
           <div className="flex items-start justify-between mb-2">
             <div>
               <h4 className="font-medium text-foreground line-clamp-1">
-                {inquiry?.vehicle?.name}
+                {inquiry?.vehicle?.year} {inquiry?.vehicle?.make}{' '}
+                {inquiry?.vehicle?.model}
               </h4>
               <p className="text-sm text-muted-foreground">
                 Inquiry #{inquiry?.id}
               </p>
             </div>
-            
-            <div className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${statusConfig?.bgColor} ${statusConfig?.color}`}>
+
+            <div
+              className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${statusConfig?.bgColor} ${statusConfig?.color}`}
+            >
               <Icon name={statusConfig?.icon} size={12} />
               <span>{statusConfig?.label}</span>
             </div>
           </div>
 
           <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-            {inquiry?.message}
+            {inquiry?.message || 'No message provided.'}
           </p>
 
           <div className="flex items-center justify-between">
@@ -86,7 +96,10 @@ const InquiryCard = ({ inquiry }) => {
               {inquiry?.responseCount > 0 && (
                 <div className="flex items-center space-x-1">
                   <Icon name="MessageCircle" size={12} />
-                  <span>{inquiry?.responseCount} response{inquiry?.responseCount !== 1 ? 's' : ''}</span>
+                  <span>
+                    {inquiry?.responseCount} response
+                    {inquiry?.responseCount !== 1 ? 's' : ''}
+                  </span>
                 </div>
               )}
             </div>
