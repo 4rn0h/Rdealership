@@ -13,91 +13,127 @@ import {
 
 const Footer = () => {
   return (
-    <footer className="bg-black text-white py-12 mt-16 border-t border-gray-700">
-      <div className="container mx-auto grid md:grid-cols-4 gap-10 px-6">
+    <footer className="bg-background text-foreground border-t border-border pt-16 mt-24">
+      <div className="container-custom grid md:grid-cols-4 gap-10">
         
         {/* Column 1 - Logo & About */}
-        <div>
-          <div className="flex items-center gap-2 mb-4">
-            <FaCar className="text-red-500 text-3xl" />
-            <h2 className="text-xl font-serif font-bold">ROYAMOTORSUK</h2>
+        <div className="space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <FaCar className="text-primary text-3xl z-10 relative" />
+              <div className="absolute -inset-3 bg-accent rounded-full opacity-20"></div>
+            </div>
+            <h2 className="text-2xl font-playfair font-bold text-primary">ROYAMOTORSUK</h2>
           </div>
-          <p className="text-gray-400 mb-4">
+          <p className="text-muted-foreground leading-relaxed">
             Luxury automotive excellence delivering exceptional vehicles from
             the UK to East Africa, with unparalleled service and attention to
             detail.
           </p>
-          <div className="flex gap-4 text-gray-400">
-            <a href="https://instagram.com/RoyaMotorsUK" target="_blank" rel="noopener noreferrer">
-              <FaInstagram className="hover:text-red-500 cursor-pointer" />
+          <div className="flex gap-5">
+            <a href="https://instagram.com/RoyaMotorsUK" target="_blank" rel="noopener noreferrer" className="luxury-hover-gold luxury-micro-transition text-muted-foreground hover:text-accent">
+              <FaInstagram className="text-xl" />
             </a>
-            <a href="https://facebook.com/RoyaMotorsUK" target="_blank" rel="noopener noreferrer">
-              <FaFacebook className="hover:text-red-500 cursor-pointer" />
+            <a href="https://facebook.com/RoyaMotorsUK" target="_blank" rel="noopener noreferrer" className="luxury-hover-gold luxury-micro-transition text-muted-foreground hover:text-accent">
+              <FaFacebook className="text-xl" />
             </a>
-            <a href="https://twitter.com/RoyaMotorsUK" target="_blank" rel="noopener noreferrer">
-              <FaTwitter className="hover:text-red-500 cursor-pointer" />
+            <a href="https://twitter.com/RoyaMotorsUK" target="_blank" rel="noopener noreferrer" className="luxury-hover-gold luxury-micro-transition text-muted-foreground hover:text-accent">
+              <FaTwitter className="text-xl" />
             </a>
           </div>
         </div>
 
         {/* Column 2 - Quick Links */}
         <div>
-          <h3 className="font-semibold text-lg mb-4">Quick Links</h3>
-          <ul className="space-y-2 text-gray-400">
-            <li><Link to="/" className="luxury-hover-gold">Home</Link></li>
-            <li><Link to="/vehicle-browse-search" className="luxury-hover-gold">Our Collection</Link></li>
-            <li><Link to="/about" className="luxury-hover-gold">About Us</Link></li>
-            <li><Link to="/contacts" className="luxury-hover-gold">Contact</Link></li>
-            <li><Link to="/privacy-policy" className="luxury-hover-gold">Privacy Policy</Link></li>
-            <li><Link to="/terms" className="luxury-hover-gold">Terms & Conditions</Link></li>
+          <h3 className="font-playfair font-semibold text-lg mb-6 relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-12 after:h-0.5 after:bg-accent">
+            Quick Links
+          </h3>
+          <ul className="space-y-3">
+            {[
+              { name: "Home", path: "/" },
+              { name: "Our Collection", path: "/vehicle-browse-search" },
+              { name: "About Us", path: "/about" },
+              { name: "Contact", path: "/contacts" },
+              { name: "Privacy Policy", path: "/privacy-policy" },
+              { name: "Terms & Conditions", path: "/terms" }
+            ].map((link, index) => (
+              <li key={index}>
+                <Link 
+                  to={link.path} 
+                  className="text-muted-foreground luxury-hover-gold luxury-micro-transition hover:text-accent block py-1"
+                >
+                  {link.name}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
 
         {/* Column 3 - Contact Us */}
         <div>
-          <h3 className="font-semibold text-lg mb-4">Contact Us</h3>
-          <p className="flex items-center gap-2 text-gray-400">
-            <FaPhoneAlt className="text-red-500" /> 
-            <a href="tel:+447964595923" className="hover:text-red-500">
-              UK Office: +44 7964 595923
-            </a>
-          </p>
-          <p className="flex items-center gap-2 text-gray-400">
-            <FaPhoneAlt className="text-red-500" /> 
-            <a href="tel:+254710966523" className="hover:text-red-500">
-              East Africa Office: +254 710 966523
-            </a>
-          </p>
-          <p className="flex items-center gap-2 text-gray-400">
-            <FaEnvelope className="text-red-500" /> 
-            <a href="mailto:info@royamotorsuk.com" className="hover:text-red-500">
-              info@royamotorsuk.com
-            </a>
-          </p>
-          <p className="flex items-center gap-2 text-gray-400">
-            <FaMapMarkerAlt className="text-red-500" /> 
-            39 Kinross drive, Bletchley, Milton Keynes, MK3 7UF
-          </p>
+          <h3 className="font-playfair font-semibold text-lg mb-6 relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-12 after:h-0.5 after:bg-accent">
+            Contact Us
+          </h3>
+          <div className="space-y-4">
+            <div className="flex items-start gap-3">
+              <FaPhoneAlt className="text-accent mt-1 flex-shrink-0" /> 
+              <a href="tel:+447964595923" className="text-muted-foreground luxury-hover-gold luxury-micro-transition hover:text-accent block">
+                UK Office: +44 7964 595923
+              </a>
+            </div>
+            <div className="flex items-start gap-3">
+              <FaPhoneAlt className="text-accent mt-1 flex-shrink-0" /> 
+              <a href="tel:+254710966523" className="text-muted-foreground luxury-hover-gold luxury-micro-transition hover:text-accent block">
+                East Africa Office: +254 710 966523
+              </a>
+            </div>
+            <div className="flex items-start gap-3">
+              <FaEnvelope className="text-accent mt-1 flex-shrink-0" /> 
+              <a href="mailto:info@royamotorsuk.com" className="text-muted-foreground luxury-hover-gold luxury-micro-transition hover:text-accent block">
+                info@royamotorsuk.com
+              </a>
+            </div>
+            <div className="flex items-start gap-3">
+              <FaMapMarkerAlt className="text-accent mt-1 flex-shrink-0" /> 
+              <span className="text-muted-foreground">
+                39 Kinross drive, Bletchley, Milton Keynes, MK3 7UF
+              </span>
+            </div>
+          </div>
         </div>
 
         {/* Column 4 - Business Hours */}
         <div>
-          <h3 className="font-semibold text-lg mb-4">Business Hours</h3>
-          <p className="text-gray-400">Monday - Friday: 9:00 AM - 6:00 PM</p>
-          <p className="text-gray-400">Saturday: 10:00 AM - 4:00 PM</p>
-          <p className="text-gray-400">Sunday: By Appointment</p>
+          <h3 className="font-playfair font-semibold text-lg mb-6 relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-12 after:h-0.5 after:bg-accent">
+            Business Hours
+          </h3>
+          <div className="space-y-2 text-muted-foreground mb-6">
+            <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+            <p>Saturday: 10:00 AM - 4:00 PM</p>
+            <p>Sunday: By Appointment</p>
+          </div>
 
-          <h3 className="font-semibold text-lg mt-6 mb-2">We Accept</h3>
-          <div className="flex gap-3">
-            <img src="https://img.icons8.com/color/48/visa.png" alt="Visa" className="h-8" />
-            <img src="https://img.icons8.com/color/48/mastercard-logo.png" alt="MasterCard" className="h-8" />
-            <img src="https://img.icons8.com/ios-filled/50/bank-building.png" alt="Bank Transfer" className="h-8 invert" />
+          <h3 className="font-playfair font-semibold text-lg mb-4 relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-12 after:h-0.5 after:bg-accent">
+            We Accept
+          </h3>
+          <div className="flex gap-4">
+            <div className="bg-card p-2 rounded luxury-shadow-subtle">
+              <img src="https://img.icons8.com/color/48/visa.png" alt="Visa" className="h-6" />
+            </div>
+            <div className="bg-card p-2 rounded luxury-shadow-subtle">
+              <img src="https://img.icons8.com/color/48/mastercard-logo.png" alt="MasterCard" className="h-6" />
+            </div>
+            <div className="bg-card p-2 rounded luxury-shadow-subtle invert opacity-80">
+              <img src="https://img.icons8.com/ios-filled/50/bank-building.png" alt="Bank Transfer" className="h-6" />
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="mt-8 text-center text-gray-500 text-sm border-t border-gray-700 pt-4">
-        © {new Date().getFullYear()} RoyaMotorsUK. All rights reserved.
+      <div className="border-t border-border mt-12 pt-6 pb-8 text-center">
+        <p className="text-muted-foreground text-sm">
+          © {new Date().getFullYear()} RoyaMotorsUK. All rights reserved.
+        </p>
       </div>
     </footer>
   );
