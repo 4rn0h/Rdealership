@@ -12,7 +12,7 @@ export async function uploadVehicleImage(file) {
   const { data, error } = await supabase.storage
     .from("vehicle-images")
     .upload(fileName, file, {
-      cacheControl: "3600",
+      cacheControl: "5000",
       upsert: false,
     });
 
