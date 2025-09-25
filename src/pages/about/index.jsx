@@ -8,7 +8,7 @@ export default function AboutPage() {
   }, []);
 
   return (
-    <div className="pt-20 pb-12 bg-background min-h-screen">
+    <div className="pt-20 pb-8 bg-background min-h-screen">
       {/* Hero Section */}
       <div className="luxury-gradient text-primary-foreground py-12 md:py-16 mb-8 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDYwIDYwIj48ZyBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMTUiLz48L2c+PC9zdmc+')]"></div>
@@ -161,7 +161,7 @@ export default function AboutPage() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {[
             { icon: Award, value: "5+", label: "Years of Excellence" },
             { icon: Users, value: "250+", label: "Satisfied Clients" },
@@ -181,7 +181,11 @@ export default function AboutPage() {
           ))}
         </div>
       </div>
-      <CallToAction />
+      
+      {/* CTA with reduced margin */}
+      <div className="mt-4">
+        <CallToAction />
+      </div>
     </div>
   );
 }
