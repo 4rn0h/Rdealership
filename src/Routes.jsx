@@ -7,7 +7,7 @@ import NotFound from "pages/NotFound";
 
 // Layouts
 import PublicLayout from "layouts/PublicLayout";
-import AuthLayout from "layouts/AuthLayout";
+// import AuthLayout from "layouts/AuthLayout";
 
 // Pages
 import Home from "pages/home";
@@ -118,16 +118,6 @@ const Routes = () => {
               </PublicLayout>
             }
           />
-
-          {/* Auth Routes (no Header/Footer) 
-          <Route
-            path="/user-authentication"
-            element={
-              <AuthLayout>
-                <UserAuthentication />
-              </AuthLayout>
-            }
-          /> */}
 
           {/* Fallback */}
           <Route path="*" element={<NotFound />} />

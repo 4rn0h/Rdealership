@@ -1,66 +1,60 @@
-import React from 'react';
+// src/pages/user-dashboard/components/TestDriveCard.jsx
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '../../../components/AppIcon';
 import Image from '../../../components/AppImage';
 import Button from '../../../components/ui/Button';
+import { supabase } from '../../../lib/supabaseClient';
 
 const TestDriveCard = ({ testDrive, onReschedule, onCancel }) => {
   const navigate = useNavigate();
+  const [driveData, setDriveData] = useState(testDrive);
+
+  // 🔄 Hydrate vehicle details from Supabase if missing
+  useEffect(() => {
+    const fetchVehicle = async () => {
+      if (testDrive?.vehicle_id && !testDrive?.vehicle) {
+        const { data, error } = await supabase
+          .from('vehicles')
+          .select('*')
+          .eq('id', testDrive.vehicle_id)
+          .single();
+
+        if (!error && data) {
+          setDriveData({ ...testDrive, vehicle: data });
+        }
+      }
+    };
+    fetchVehicle();
+  }, [testDrive]);
 
   const getStatusConfig = (status) => {
     const configs = {
-      scheduled: {
-        color: 'text-accent',
-        bgColor: 'bg-accent/10',
-        icon: 'Calendar',
-        label: 'Scheduled'
-      },
-      confirmed: {
-        color: 'text-success',
-        bgColor: 'bg-success/10',
-        icon: 'CheckCircle',
-        label: 'Confirmed'
-      },
-      completed: {
-        color: 'text-muted-foreground',
-        bgColor: 'bg-muted',
-        icon: 'Check',
-        label: 'Completed'
-      },
-      cancelled: {
-        color: 'text-error',
-        bgColor: 'bg-error/10',
-        icon: 'XCircle',
-        label: 'Cancelled'
-      }
+      scheduled: { color: 'text-accent', bgColor: 'bg-accent/10', icon: 'Calendar', label: 'Scheduled' },
+      confirmed: { color: 'text-success', bgColor: 'bg-success/10', icon: 'CheckCircle', label: 'Confirmed' },
+      completed: { color: 'text-muted-foreground', bgColor: 'bg-muted', icon: 'Check', label: 'Completed' },
+      cancelled: { color: 'text-error', bgColor: 'bg-error/10', icon: 'XCircle', label: 'Cancelled' },
     };
     return configs?.[status] || configs?.scheduled;
   };
 
   const formatDateTime = (date, time) => {
+    if (!date || !time) return { date: '', time: '' };
     const dateObj = new Date(`${date}T${time}`);
     return {
-      date: new Intl.DateTimeFormat('en-GB', {
-        weekday: 'short',
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric'
-      })?.format(dateObj),
-      time: new Intl.DateTimeFormat('en-GB', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      })?.format(dateObj)
+      date: new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' }).format(dateObj),
+      time: new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }).format(dateObj),
     };
   };
 
   const isUpcoming = () => {
-    const appointmentDateTime = new Date(`${testDrive.date}T${testDrive.time}`);
-    return appointmentDateTime > new Date() && testDrive?.status !== 'cancelled';
+    if (!driveData?.date || !driveData?.time) return false;
+    const appointmentDateTime = new Date(`${driveData.date}T${driveData.time}`);
+    return appointmentDateTime > new Date() && driveData?.status !== 'cancelled';
   };
 
-  const statusConfig = getStatusConfig(testDrive?.status);
-  const formattedDateTime = formatDateTime(testDrive?.date, testDrive?.time);
+  const statusConfig = getStatusConfig(driveData?.status);
+  const formattedDateTime = formatDateTime(driveData?.date, driveData?.time);
 
   return (
     <div className="bg-card border border-border rounded-lg p-4 luxury-shadow-subtle hover:luxury-shadow-medium luxury-transition">
@@ -68,8 +62,8 @@ const TestDriveCard = ({ testDrive, onReschedule, onCancel }) => {
         {/* Vehicle Image */}
         <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
           <Image
-            src={testDrive?.vehicle?.image}
-            alt={testDrive?.vehicle?.name}
+            src={driveData?.vehicle?.image || driveData?.vehicle?.images?.[0] || driveData?.vehicle?.image_urls?.[0]}
+            alt={driveData?.vehicle?.name || `${driveData?.vehicle?.year} ${driveData?.vehicle?.make} ${driveData?.vehicle?.model}`}
             className="w-full h-full object-cover"
           />
         </div>
@@ -79,13 +73,10 @@ const TestDriveCard = ({ testDrive, onReschedule, onCancel }) => {
           <div className="flex items-start justify-between mb-2">
             <div>
               <h4 className="font-medium text-foreground line-clamp-1">
-                {testDrive?.vehicle?.name}
+                {driveData?.vehicle?.name || `${driveData?.vehicle?.year} ${driveData?.vehicle?.make} ${driveData?.vehicle?.model}`}
               </h4>
-              <p className="text-sm text-muted-foreground">
-                Booking #{testDrive?.id}
-              </p>
+              <p className="text-sm text-muted-foreground">Booking #{driveData?.id}</p>
             </div>
-            
             <div className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${statusConfig?.bgColor} ${statusConfig?.color}`}>
               <Icon name={statusConfig?.icon} size={12} />
               <span>{statusConfig?.label}</span>
@@ -107,14 +98,14 @@ const TestDriveCard = ({ testDrive, onReschedule, onCancel }) => {
           {/* Location */}
           <div className="flex items-center space-x-1 mb-3 text-sm text-muted-foreground">
             <Icon name="MapPin" size={14} />
-            <span>{testDrive?.location}</span>
+            <span>{driveData?.location}</span>
           </div>
 
           {/* Sales Agent */}
-          {testDrive?.salesAgent && (
+          {driveData?.salesAgent && (
             <div className="flex items-center space-x-1 mb-3 text-sm text-muted-foreground">
               <Icon name="User" size={14} />
-              <span>with {testDrive?.salesAgent}</span>
+              <span>with {driveData?.salesAgent}</span>
             </div>
           )}
 
@@ -126,7 +117,7 @@ const TestDriveCard = ({ testDrive, onReschedule, onCancel }) => {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => onReschedule(testDrive?.id)}
+                    onClick={() => onReschedule(driveData?.id)}
                     iconName="Calendar"
                     iconPosition="left"
                   >
@@ -135,7 +126,7 @@ const TestDriveCard = ({ testDrive, onReschedule, onCancel }) => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => onCancel(testDrive?.id)}
+                    onClick={() => onCancel(driveData?.id)}
                     iconName="X"
                     iconPosition="left"
                     className="text-error hover:text-error"
@@ -149,7 +140,7 @@ const TestDriveCard = ({ testDrive, onReschedule, onCancel }) => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => navigate(`/vehicle-detail?id=${testDrive?.vehicle?.id}`)}
+              onClick={() => navigate(`/vehicle-detail?id=${driveData?.vehicle?.id}`)}
               iconName="ArrowRight"
               iconPosition="right"
             >

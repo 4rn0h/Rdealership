@@ -1,5 +1,7 @@
+// src/components/layout/Header.jsx
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { supabase } from "../../lib/supabaseClient"; // adjust path if needed
 import Icon from "../AppIcon";
 import { FaPhoneAlt, FaUserCircle, FaCar } from "react-icons/fa";
 
@@ -9,12 +11,29 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Mock user authentication state
+  // ✅ Supabase session check + listener
   useEffect(() => {
-    const mockUser = localStorage.getItem("RoyaMotorsUk_user");
-    if (mockUser) {
-      setUser(JSON.parse(mockUser));
-    }
+    const getSession = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error("Error getting session:", error.message);
+        setUser(null);
+      } else {
+        setUser(data.session?.user ?? null);
+      }
+    };
+
+    getSession();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
   }, []);
 
   // Left nav
@@ -29,7 +48,7 @@ const Header = () => {
     { label: "Contact", path: "/contacts" },
   ];
 
-  // Role-based items
+  // Role-based items (optional: adjust roles from Supabase metadata if needed)
   const roleNavItems = [
     {
       label: "My Dashboard",
@@ -56,9 +75,13 @@ const Header = () => {
     setIsMobileMenuOpen(false);
   };
 
-  const handleAuthAction = () => {
+  // ✅ Sign In / Sign Out via Supabase
+  const handleAuthAction = async () => {
     if (user) {
-      localStorage.removeItem("RoyaMotorsUk_user");
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Error signing out:", error.message);
+      }
       setUser(null);
       navigate("/");
     } else {
@@ -67,7 +90,8 @@ const Header = () => {
     setIsMobileMenuOpen(false);
   };
 
-  const getUserRole = () => user?.role || "public";
+  const getUserRole = () =>
+    user?.user_metadata?.role || "public"; // Supabase stores custom claims here
   const getVisibleNavItems = () =>
     roleNavItems.filter((item) => item.roles.includes(getUserRole()));
   const isActivePath = (path) => location?.pathname === path;
@@ -105,7 +129,11 @@ const Header = () => {
                 }`}
               >
                 {item.label}
-                <span className={`absolute bottom-0 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full ${isActivePath(item.path) ? 'w-full' : ''}`}></span>
+                <span
+                  className={`absolute bottom-0 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full ${
+                    isActivePath(item.path) ? "w-full" : ""
+                  }`}
+                ></span>
               </button>
             ))}
           </nav>
@@ -136,7 +164,11 @@ const Header = () => {
                 }`}
               >
                 {item.label}
-                <span className={`absolute bottom-0 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full ${isActivePath(item.path) ? 'w-full' : ''}`}></span>
+                <span
+                  className={`absolute bottom-0 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full ${
+                    isActivePath(item.path) ? "w-full" : ""
+                  }`}
+                ></span>
               </button>
             ))}
 
@@ -153,7 +185,11 @@ const Header = () => {
               >
                 <Icon name={item.icon} size={18} />
                 <span className="font-medium">{item.label}</span>
-                <span className={`absolute bottom-0 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full ${isActivePath(item.path) ? 'w-full' : ''}`}></span>
+                <span
+                  className={`absolute bottom-0 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full ${
+                    isActivePath(item.path) ? "w-full" : ""
+                  }`}
+                ></span>
               </button>
             ))}
           </nav>
@@ -172,7 +208,7 @@ const Header = () => {
             href="tel:+447964595923"
             className="hidden md:flex bg-primary px-3 py-2 rounded-lg items-center space-x-2 text-primary-foreground hover:bg-primary/90 luxury-micro-transition luxury-shadow-subtle"
           >
-            <FaPhoneAlt className="text-sm" /> 
+            <FaPhoneAlt className="text-sm" />
             <span className="text-sm font-medium">+44 7964 595923</span>
           </a>
 
@@ -236,7 +272,7 @@ const Header = () => {
                   href="tel:+447964595923"
                   className="block bg-primary px-4 py-3 rounded-lg flex items-center justify-center space-x-2 text-primary-foreground hover:bg-primary/90 mb-4"
                 >
-                  <FaPhoneAlt /> 
+                  <FaPhoneAlt />
                   <span>+44 7964 595923</span>
                 </a>
 
@@ -246,7 +282,9 @@ const Header = () => {
                   className="block w-full px-4 py-3 rounded-lg hover:bg-muted luxury-micro-transition text-foreground flex items-center justify-center space-x-2"
                 >
                   <FaUserCircle className="text-xl" />
-                  <span className="font-medium">{user ? "Sign Out" : "Sign In"}</span>
+                  <span className="font-medium">
+                    {user ? "Sign Out" : "Sign In"}
+                  </span>
                 </button>
               </div>
             </nav>

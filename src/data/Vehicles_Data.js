@@ -1,4 +1,4 @@
-//src/data/vehicles_Data.jsx
+//src/data/vehicles_Data.js
 
 export const vehicles = [
   {

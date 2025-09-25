@@ -1,4 +1,4 @@
-// src/data/vehicle_Specs.jsx
+// src/data/vehicle_Specs.js
 
 const vehicleSpecifications = {
   "1": { // Bentley Continental GT

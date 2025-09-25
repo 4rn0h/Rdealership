@@ -1,34 +1,40 @@
 // src/pages/user-dashboard/index.jsx
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Icon from '../../components/AppIcon';
-import Button from '../../components/ui/Button';
-import Header from '../../components/ui/Header';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Icon from "../../components/AppIcon";
+import Button from "../../components/ui/Button";
+import Header from "../../components/ui/Header";
+import { supabase } from "../../lib/supabaseClient";
 
 // Import dashboard components
-import FavoriteVehicleCard from './components/FavoriteVehicleCard';
-import InquiryCard from './components/InquiryCard';
-import TestDriveCard from './components/TestDriveCard';
-import PriceAlertCard from './components/PriceAlertCard';
-import ActivityFeedCard from './components/ActivityFeedCard';
-import QuickActionCard from './components/QuickActionCard';
-import NotificationPreferences from './components/NotificationPreferences';
-import ProfileCompletionCard from './components/ProfileCompletionCard';
+import FavoriteVehicleCard from "./components/FavoriteVehicleCard";
+import InquiryCard from "./components/InquiryCard";
+import TestDriveCard from "./components/TestDriveCard";
+import PriceAlertCard from "./components/PriceAlertCard";
+import ActivityFeedCard from "./components/ActivityFeedCard";
+import QuickActionCard from "./components/QuickActionCard";
+import NotificationPreferences from "./components/NotificationPreferences";
+import ProfileCompletionCard from "./components/ProfileCompletionCard";
 
-// ✅ Import all central mock data
+// ✅ Import only the mocks still needed
 import {
   mockFavoriteVehicles,
   mockInquiries,
   mockTestDrives,
   mockPriceAlerts,
-  mockActivities,
-  mockQuickActions,
   mockNotificationPreferences,
-} from "../../data/Dashboard_Data.jsx";
+} from "../../data/Dashboard_Data.js";
 
 const UserDashboard = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+
+  // Data states
+  const [favorites, setFavorites] = useState([]);
+  const [inquiries, setInquiries] = useState([]);
+  const [testDrives, setTestDrives] = useState([]);
+  const [priceAlerts, setPriceAlerts] = useState([]);
+  const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // ✅ Profile completion stays local
@@ -36,44 +42,131 @@ const UserDashboard = () => {
     percentage: 65,
     completedSteps: 4,
     totalSteps: 7,
-    missingSteps: ['budget_range', 'vehicle_preferences', 'profile_photo'],
+    missingSteps: ["budget_range", "vehicle_preferences", "profile_photo"],
   };
 
+  // 🔄 Fetch dashboard + core tables
   useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        // 1. Stats
+        const { data: statsData, error: statsError } = await supabase
+          .from("dashboard_stats")
+          .select("*")
+          .single();
+
+        if (statsError || !statsData) {
+          console.warn("Stats fallback to mocks:", statsError?.message);
+          setStats({
+            total_vehicles: mockFavoriteVehicles.length,
+            total_inquiries: mockInquiries.length,
+            total_test_drives: mockTestDrives.length,
+            total_price_alerts: mockPriceAlerts.length,
+            total_favorites: mockFavoriteVehicles.length,
+            last_vehicle_update: new Date().toISOString(),
+            generated_at: new Date().toISOString(),
+          });
+        } else {
+          setStats(statsData);
+        }
+
+        // 2. Favorites
+        const { data: favs, error: favsError } = await supabase
+          .from("favorites")
+          .select("id, vehicle_id, created_at, vehicles(*)")
+          .limit(10);
+
+        setFavorites(favsError || !favs?.length ? mockFavoriteVehicles : favs);
+
+        // 3. Inquiries
+        const { data: inq, error: inqError } = await supabase
+          .from("inquiries")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(5);
+
+        setInquiries(inqError || !inq?.length ? mockInquiries : inq);
+
+        // 4. Test Drives
+        const { data: drives, error: drivesError } = await supabase
+          .from("test_drives")
+          .select("*")
+          .order("scheduled_at", { ascending: false })
+          .limit(5);
+
+        setTestDrives(drivesError || !drives?.length ? mockTestDrives : drives);
+
+        // 5. Price Alerts
+        const { data: alerts, error: alertsError } = await supabase
+          .from("price_alerts")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(5);
+
+        setPriceAlerts(alertsError || !alerts?.length ? mockPriceAlerts : alerts);
+
+      } catch (err) {
+        console.error("Dashboard fetch error:", err);
+
+        // 🔄 fallback to mocks for everything
+        setStats({
+          total_vehicles: mockFavoriteVehicles.length,
+          total_inquiries: mockInquiries.length,
+          total_test_drives: mockTestDrives.length,
+          total_price_alerts: mockPriceAlerts.length,
+          total_favorites: mockFavoriteVehicles.length,
+          last_vehicle_update: new Date().toISOString(),
+          generated_at: new Date().toISOString(),
+        });
+        setFavorites(mockFavoriteVehicles);
+        setInquiries(mockInquiries);
+        setTestDrives(mockTestDrives);
+        setPriceAlerts(mockPriceAlerts);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Fake user load
     const timer = setTimeout(() => {
       setUser({
         id: 1,
         name: "David Kimani",
         email: "david.kimani@email.com",
         role: "user",
-        avatar: "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg",
+        avatar:
+          "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg",
         joinedAt: "2024-11-15T10:00:00Z",
         preferences: {
           currency: "KES",
           notifications: mockNotificationPreferences,
         },
       });
-      setLoading(false);
     }, 1000);
+
+    fetchDashboard();
     return () => clearTimeout(timer);
   }, []);
 
   // ✅ Handlers
-  const handleRemoveFavorite = (vehicleId) => console.log('Remove favorite:', vehicleId);
-  const handleTogglePriceAlert = (vehicleId) => console.log('Toggle price alert:', vehicleId);
-  const handleRescheduleTestDrive = (testDriveId) => console.log('Reschedule test drive:', testDriveId);
-  const handleCancelTestDrive = (testDriveId) => console.log('Cancel test drive:', testDriveId);
-  const handleToggleAlert = (alertId) => console.log('Toggle alert:', alertId);
-  const handleRemoveAlert = (alertId) => console.log('Remove alert:', alertId);
+  const handleRemoveFavorite = (vehicleId) =>
+    console.log("Remove favorite:", vehicleId);
+  const handleTogglePriceAlert = (vehicleId) =>
+    console.log("Toggle price alert:", vehicleId);
+  const handleRescheduleTestDrive = (testDriveId) =>
+    console.log("Reschedule test drive:", testDriveId);
+  const handleCancelTestDrive = (testDriveId) =>
+    console.log("Cancel test drive:", testDriveId);
+  const handleToggleAlert = (alertId) =>
+    console.log("Toggle alert:", alertId);
+  const handleRemoveAlert = (alertId) =>
+    console.log("Remove alert:", alertId);
   const handleSaveNotificationPreferences = async (preferences) => {
-    console.log('Save preferences:', preferences);
-    return new Promise(resolve => setTimeout(resolve, 1000));
+    console.log("Save preferences:", preferences);
+    return new Promise((resolve) => setTimeout(resolve, 1000));
   };
-  const handleDismissProfileCompletion = () => console.log('Dismiss profile completion');
-  const handleQuickAction = (actionId) => {
-    const action = mockQuickActions.find(a => a.id === actionId);
-    if (action?.id === 3) console.log('Contact sales agent');
-  };
+  const handleDismissProfileCompletion = () =>
+    console.log("Dismiss profile completion");
 
   if (loading) {
     return (
@@ -104,17 +197,34 @@ const UserDashboard = () => {
           <div className="mb-8 flex items-center justify-between flex-wrap gap-4">
             <div>
               <h1 className="text-3xl font-heading font-bold text-foreground mb-2">
-                Welcome back, {user?.name?.split(' ')?.[0]}!
+                Welcome back, {user?.name?.split(" ")?.[0]}!
               </h1>
               <p className="text-muted-foreground">
                 Here's what's happening with your luxury vehicle journey
               </p>
+              {stats && (
+                <p className="text-sm text-muted-foreground mt-2">
+                  🚗 Vehicles: {stats.total_vehicles} | 📩 Inquiries:{" "}
+                  {stats.total_inquiries} | 🗓 Test Drives:{" "}
+                  {stats.total_test_drives}
+                </p>
+              )}
             </div>
             <div className="flex items-center space-x-3">
-              <Button variant="outline" onClick={() => navigate('/vehicle-browse-search')} iconName="Search" iconPosition="left">
+              <Button
+                variant="outline"
+                onClick={() => navigate("/vehicle-browse-search")}
+                iconName="Search"
+                iconPosition="left"
+              >
                 Browse Vehicles
               </Button>
-              <Button variant="default" onClick={() => navigate('/inquiry-management')} iconName="MessageSquare" iconPosition="left">
+              <Button
+                variant="default"
+                onClick={() => navigate("/inquiry-management")}
+                iconName="MessageSquare"
+                iconPosition="left"
+              >
                 New Inquiry
               </Button>
             </div>
@@ -132,16 +242,10 @@ const UserDashboard = () => {
 
           {/* Quick Actions */}
           <div className="mb-8">
-            <h2 className="text-xl font-heading font-semibold text-foreground mb-4">Quick Actions</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {mockQuickActions.map((action) => (
-                <QuickActionCard
-                  key={action.id}
-                  action={action}
-                  onClick={() => handleQuickAction(action.id)}
-                />
-              ))}
-            </div>
+            <h2 className="text-xl font-heading font-semibold text-foreground mb-4">
+              Quick Actions
+            </h2>
+            <QuickActionCard />
           </div>
 
           {/* Main Dashboard Grid */}
@@ -151,23 +255,27 @@ const UserDashboard = () => {
               {/* Favorites */}
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-heading font-semibold text-foreground">My Favorites</h2>
+                  <h2 className="text-xl font-heading font-semibold text-foreground">
+                    My Favorites
+                  </h2>
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => navigate('/vehicle-browse-search?section=favorites')}
+                    onClick={() =>
+                      navigate("/vehicle-browse-search?section=favorites")
+                    }
                     iconName="ArrowRight"
                     iconPosition="right"
                   >
-                    View All ({mockFavoriteVehicles?.length})
+                    View All ({favorites?.length})
                   </Button>
                 </div>
-                {mockFavoriteVehicles?.length > 0 ? (
+                {favorites?.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {mockFavoriteVehicles.slice(0, 4).map((vehicle) => (
+                    {favorites.slice(0, 4).map((favorite) => (
                       <FavoriteVehicleCard
-                        key={vehicle?.id}
-                        vehicle={vehicle}
+                        key={favorite?.id}
+                        vehicle={favorite?.vehicles || favorite}
                         onRemoveFavorite={handleRemoveFavorite}
                         onPriceAlert={handleTogglePriceAlert}
                       />
@@ -175,14 +283,20 @@ const UserDashboard = () => {
                   </div>
                 ) : (
                   <div className="bg-card border border-border rounded-lg p-8 text-center">
-                    <Icon name="Heart" size={48} className="text-muted-foreground mx-auto mb-4" />
-                    <h3 className="font-medium text-foreground mb-2">No favorites yet</h3>
+                    <Icon
+                      name="Heart"
+                      size={48}
+                      className="text-muted-foreground mx-auto mb-4"
+                    />
+                    <h3 className="font-medium text-foreground mb-2">
+                      No favorites yet
+                    </h3>
                     <p className="text-sm text-muted-foreground mb-4">
                       Start browsing and save vehicles you're interested in
                     </p>
                     <Button
                       variant="outline"
-                      onClick={() => navigate('/vehicle-browse-search')}
+                      onClick={() => navigate("/vehicle-browse-search")}
                       iconName="Search"
                       iconPosition="left"
                     >
@@ -195,33 +309,42 @@ const UserDashboard = () => {
               {/* Recent Inquiries */}
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-heading font-semibold text-foreground">Recent Inquiries</h2>
+                  <h2 className="text-xl font-heading font-semibold text-foreground">
+                    Recent Inquiries
+                  </h2>
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => navigate('/inquiry-management')}
+                    onClick={() => navigate("/inquiry-management")}
                     iconName="ArrowRight"
                     iconPosition="right"
                   >
-                    View All ({mockInquiries?.length})
+                    View All ({inquiries?.length})
                   </Button>
                 </div>
-                {mockInquiries?.length > 0 ? (
+                {inquiries?.length > 0 ? (
                   <div className="space-y-4">
-                    {mockInquiries.slice(0, 3).map((inquiry) => (
+                    {inquiries.slice(0, 3).map((inquiry) => (
                       <InquiryCard key={inquiry?.id} inquiry={inquiry} />
                     ))}
                   </div>
                 ) : (
                   <div className="bg-card border border-border rounded-lg p-8 text-center">
-                    <Icon name="MessageSquare" size={48} className="text-muted-foreground mx-auto mb-4" />
-                    <h3 className="font-medium text-foreground mb-2">No inquiries yet</h3>
+                    <Icon
+                      name="MessageSquare"
+                      size={48}
+                      className="text-muted-foreground mx-auto mb-4"
+                    />
+                    <h3 className="font-medium text-foreground mb-2">
+                      No inquiries yet
+                    </h3>
                     <p className="text-sm text-muted-foreground mb-4">
-                      Send your first inquiry about a vehicle you're interested in
+                      Send your first inquiry about a vehicle you're interested
+                      in
                     </p>
                     <Button
                       variant="outline"
-                      onClick={() => navigate('/vehicle-browse-search')}
+                      onClick={() => navigate("/vehicle-browse-search")}
                       iconName="MessageSquare"
                       iconPosition="left"
                     >
@@ -234,20 +357,24 @@ const UserDashboard = () => {
               {/* Test Drives */}
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-heading font-semibold text-foreground">Scheduled Test Drives</h2>
+                  <h2 className="text-xl font-heading font-semibold text-foreground">
+                    Scheduled Test Drives
+                  </h2>
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => navigate('/user-dashboard?section=test-drives')}
+                    onClick={() =>
+                      navigate("/user-dashboard?section=test-drives")
+                    }
                     iconName="ArrowRight"
                     iconPosition="right"
                   >
-                    View All ({mockTestDrives?.length})
+                    View All ({testDrives?.length})
                   </Button>
                 </div>
-                {mockTestDrives?.length > 0 ? (
+                {testDrives?.length > 0 ? (
                   <div className="space-y-4">
-                    {mockTestDrives.slice(0, 2).map((testDrive) => (
+                    {testDrives.slice(0, 2).map((testDrive) => (
                       <TestDriveCard
                         key={testDrive?.id}
                         testDrive={testDrive}
@@ -258,14 +385,22 @@ const UserDashboard = () => {
                   </div>
                 ) : (
                   <div className="bg-card border border-border rounded-lg p-8 text-center">
-                    <Icon name="Calendar" size={48} className="text-muted-foreground mx-auto mb-4" />
-                    <h3 className="font-medium text-foreground mb-2">No test drives scheduled</h3>
+                    <Icon
+                      name="Calendar"
+                      size={48}
+                      className="text-muted-foreground mx-auto mb-4"
+                    />
+                    <h3 className="font-medium text-foreground mb-2">
+                      No test drives scheduled
+                    </h3>
                     <p className="text-sm text-muted-foreground mb-4">
                       Schedule a test drive to experience our luxury vehicles
                     </p>
                     <Button
                       variant="outline"
-                      onClick={() => navigate('/vehicle-browse-search?action=schedule')}
+                      onClick={() =>
+                        navigate("/vehicle-browse-search?action=schedule")
+                      }
                       iconName="Calendar"
                       iconPosition="left"
                     >
@@ -281,20 +416,22 @@ const UserDashboard = () => {
               {/* Price Alerts */}
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-heading font-semibold text-foreground">Price Alerts</h3>
+                  <h3 className="text-lg font-heading font-semibold text-foreground">
+                    Price Alerts
+                  </h3>
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => navigate('/user-dashboard?section=alerts')}
+                    onClick={() => navigate("/user-dashboard?section=alerts")}
                     iconName="ArrowRight"
                     iconPosition="right"
                   >
                     View All
                   </Button>
                 </div>
-                {mockPriceAlerts?.length > 0 ? (
+                {priceAlerts?.length > 0 ? (
                   <div className="space-y-4">
-                    {mockPriceAlerts.slice(0, 2).map((alert) => (
+                    {priceAlerts.slice(0, 2).map((alert) => (
                       <PriceAlertCard
                         key={alert?.id}
                         alert={alert}
@@ -305,29 +442,24 @@ const UserDashboard = () => {
                   </div>
                 ) : (
                   <div className="bg-card border border-border rounded-lg p-6 text-center">
-                    <Icon name="Bell" size={32} className="text-muted-foreground mx-auto mb-3" />
-                    <p className="text-sm text-muted-foreground">No price alerts set</p>
+                    <Icon
+                      name="Bell"
+                      size={32}
+                      className="text-muted-foreground mx-auto mb-3"
+                    />
+                    <p className="text-sm text-muted-foreground">
+                      No price alerts set
+                    </p>
                   </div>
                 )}
               </div>
 
               {/* Activity */}
               <div>
-                <h3 className="text-lg font-heading font-semibold text-foreground mb-4">Recent Activity</h3>
-                <div className="bg-card border border-border rounded-lg overflow-hidden">
-                  {mockActivities?.length > 0 ? (
-                    <div className="divide-y divide-border">
-                      {mockActivities.slice(0, 5).map((activity) => (
-                        <ActivityFeedCard key={activity?.id} activity={activity} />
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="p-6 text-center">
-                      <Icon name="Activity" size={32} className="text-muted-foreground mx-auto mb-3" />
-                      <p className="text-sm text-muted-foreground">No recent activity</p>
-                    </div>
-                  )}
-                </div>
+                <h3 className="text-lg font-heading font-semibold text-foreground mb-4">
+                  Recent Activity
+                </h3>
+                <ActivityFeedCard />
               </div>
 
               {/* Notifications */}

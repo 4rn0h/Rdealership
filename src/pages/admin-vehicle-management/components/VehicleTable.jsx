@@ -1,3 +1,4 @@
+// src/pages/admin-vehicle-management/components/VehicleTable.jsx
 import React, { useState } from 'react';
 import Icon from '../../../components/AppIcon';
 import Image from '../../../components/AppImage';

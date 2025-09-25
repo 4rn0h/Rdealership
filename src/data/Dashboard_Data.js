@@ -1,4 +1,4 @@
-import vehiclesData from './Vehicles_Data';
+import vehiclesData from './Vehicles_Data.js';
 
 // ✅ Quick Actions
 export const mockQuickActions = [
@@ -197,3 +197,14 @@ export const mockTestDrives = [
     time: "11:00:00",
   },
 ];
+
+// ✅ Default export for seeding
+export default {
+  mockQuickActions,
+  mockNotificationPreferences,
+  mockPriceAlerts,
+  mockActivities,
+  mockFavoriteVehicles,
+  mockInquiries,
+  mockTestDrives,
+};

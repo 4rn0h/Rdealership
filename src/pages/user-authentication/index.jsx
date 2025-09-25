@@ -1,53 +1,127 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
-import Icon from '../../components/AppIcon';
-import AuthTabs from './components/AuthTabs';
-import LoginForm from './components/LoginForm';
-import RegisterForm from './components/RegisterForm';
-import ForgotPasswordModal from './components/ForgotPasswordModal';
-import SocialAuth from './components/SocialAuth';
-import TrustSignals from './components/TrustSignals';
+// src/pages/user-authentication/index.jsx
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Helmet } from "react-helmet";
+import Icon from "../../components/AppIcon";
+import AuthTabs from "./components/AuthTabs";
+import LoginForm from "./components/LoginForm";
+import RegisterForm from "./components/RegisterForm";
+import ForgotPasswordModal from "./components/ForgotPasswordModal";
+import SocialAuth from "./components/SocialAuth";
+import TrustSignals from "./components/TrustSignals";
+import { supabase } from "../../lib/supabaseClient";
+import { FaCar } from "react-icons/fa";
 
 const UserAuthentication = () => {
-  const [activeTab, setActiveTab] = useState('login');
+  const [activeTab, setActiveTab] = useState("login");
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [authSuccess, setAuthSuccess] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Check if user is already authenticated
-  useEffect(() => {
-    const existingUser = localStorage.getItem('RoyaMotorsUk_user');
-    if (existingUser) {
-      const userData = JSON.parse(existingUser);
-      // Redirect based on role
-      switch (userData?.role) {
-        case 'admin': navigate('/admin-vehicle-management');
-          break;
-        case 'agent': navigate('/inquiry-management');
-          break;
-        default:
-          navigate('/user-dashboard');
-      }
+  // ✅ Centralized redirect function
+  const redirectByRole = (role, name) => {
+    switch (role) {
+      case "admin":
+        navigate("/admin-vehicle-management");
+        break;
+      case "sales_agent":
+        navigate("/inquiry-management");
+        break;
+      default:
+        navigate("/user-dashboard");
     }
-  }, [navigate]);
-
-  // Handle successful authentication
-  const handleAuthSuccess = (userData) => {
-    setAuthSuccess(userData);
-    
-    // Show success message briefly before redirect
-    setTimeout(() => {
-      const from = location?.state?.from?.pathname || '/user-dashboard';
-      navigate(from, { replace: true });
-    }, 1000);
+    setAuthSuccess({ name, role });
   };
 
-  // Handle back navigation
+  // ✅ Check if user is already authenticated
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
+
+        console.log("🔍 Supabase session:", session);
+
+        if (session?.user && !error) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("role, full_name")
+            .eq("id", session.user.id) // ✅ FIXED
+            .single();
+
+          let role = profile?.role || "user"; // ✅ normalized
+          let name = profile?.full_name || session.user.email;
+
+          // fallback for admin
+          if (!profile?.role && session.user.email === "admin@royamotorsuk.com") {
+            role = "admin";
+          }
+
+          console.log("🔍 Loaded profile:", profile);
+          redirectByRole(role, name);
+          return;
+        }
+
+        // 2. Fallback → Local mock
+        const existingUser = localStorage.getItem("RoyaMotorsUk_user");
+        if (existingUser) {
+          const userData = JSON.parse(existingUser);
+          redirectByRole(userData?.role, userData?.name);
+          return;
+        }
+      } catch (err) {
+        console.error("Auth check failed:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, [navigate]);
+
+  // ✅ Handle successful authentication
+  const handleAuthSuccess = async (userData) => {
+    setAuthSuccess(userData);
+
+    try {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role, full_name")
+        .eq("id", userData.id) // ✅ FIXED
+        .single();
+
+      let role = profile?.role || "user"; // ✅ normalized
+      let name = profile?.full_name || userData.email;
+
+      if (!profile?.role && userData.email === "admin@royamotorsuk.com") {
+        role = "admin";
+      }
+
+      redirectByRole(role, name);
+    } catch (err) {
+      console.error("Post-login redirect failed:", err);
+      navigate("/user-dashboard"); // safe fallback
+    }
+  };
+
   const handleBack = () => {
     navigate(-1);
   };
+
+  // ✅ Custom loader branding
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <h2 className="text-xl font-heading font-bold text-primary">
+          Luxury Automotive Excellence
+        </h2>
+      </div>
+    );
+  }
 
   if (authSuccess) {
     return (
@@ -72,9 +146,17 @@ const UserAuthentication = () => {
   return (
     <>
       <Helmet>
-        <title>Sign In | RoyaMotorsUk Kenya - Premium Vehicle Authentication</title>
-        <meta name="description" content="Sign in to your RoyaMotorsUk Kenya account to access personalized features, save favorites, and manage vehicle inquiries. Secure authentication for premium automotive experience." />
-        <meta name="keywords" content="RoyaMotorsUk login, Kenya car dealership, vehicle authentication, luxury cars signin" />
+        <title>
+          Sign In | RoyaMotorsUk Kenya - Premium Vehicle Authentication
+        </title>
+        <meta
+          name="description"
+          content="Sign in to your RoyaMotorsUk Kenya account to access personalized features, save favorites, and manage vehicle inquiries. Secure authentication for premium automotive experience."
+        />
+        <meta
+          name="keywords"
+          content="RoyaMotorsUk login, Kenya car dealership, vehicle authentication, luxury cars signin"
+        />
       </Helmet>
 
       <div className="min-h-screen bg-background">
@@ -87,14 +169,17 @@ const UserAuthentication = () => {
             >
               <Icon name="ArrowLeft" size={24} />
             </button>
-            
+
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-luxury-gradient rounded-lg flex items-center justify-center">
-                <Icon name="Car" size={20} color="#F5F5F5" />
+              <div className="relative">
+                <FaCar className="text-primary text-xl z-10 relative" />
+                <div className="absolute -inset-2 bg-accent rounded-full opacity-20"></div>
               </div>
-              <span className="font-heading font-bold text-foreground">RoyaMotorsUk</span>
+              <span className="font-heading font-bold text-foreground">
+                ROYAMOTORSUK
+              </span>
             </div>
-            
+
             <div className="w-10"></div>
           </div>
         </div>
@@ -106,12 +191,13 @@ const UserAuthentication = () => {
               {/* Desktop Logo */}
               <div className="hidden lg:block text-center mb-8">
                 <div className="flex items-center justify-center space-x-3 mb-2">
-                  <div className="w-12 h-12 bg-luxury-gradient rounded-lg flex items-center justify-center">
-                    <Icon name="Car" size={28} color="#F5F5F5" />
+                  <div className="relative">
+                    <FaCar className="text-primary text-3xl z-10 relative" />
+                    <div className="absolute -inset-3 bg-accent rounded-full opacity-20"></div>
                   </div>
                   <div>
-                    <h1 className="text-2xl font-heading font-bold text-foreground">
-                      ROYAMOTORSUk
+                    <h1 className="text-2xl font-heading font-bold text-primary">
+                      ROYAMOTORSUK
                     </h1>
                   </div>
                 </div>
@@ -125,7 +211,7 @@ const UserAuthentication = () => {
 
               {/* Auth Forms */}
               <div className="bg-card border border-border rounded-lg p-6 luxury-shadow-medium">
-                {activeTab === 'login' ? (
+                {activeTab === "login" ? (
                   <LoginForm
                     onForgotPassword={() => setShowForgotPassword(true)}
                     onSuccess={handleAuthSuccess}
@@ -155,12 +241,13 @@ const UserAuthentication = () => {
                   Join Our East Africa's Premier Luxury Car Community
                 </h2>
                 <p className="text-muted-foreground text-sm">
-                  Experience the finest in automotive excellence with personalized service and exclusive access to premium vehicles.
+                  Experience the finest in automotive excellence with
+                  personalized service and exclusive access to premium vehicles.
                 </p>
               </div>
-              
+
               <TrustSignals />
-              
+
               {/* Contact Info */}
               <div className="pt-6 border-t border-border">
                 <h4 className="text-sm font-semibold text-foreground mb-3">
@@ -180,7 +267,11 @@ const UserAuthentication = () => {
                     </span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Icon name="MessageCircle" size={14} className="text-accent" />
+                    <Icon
+                      name="MessageCircle"
+                      size={14}
+                      className="text-accent"
+                    />
                     <span className="text-xs text-muted-foreground">
                       Live Chat Available
                     </span>

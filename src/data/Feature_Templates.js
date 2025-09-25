@@ -1,5 +1,3 @@
-// src/data/Feature_Templates.jsx
-
 // ✅ Safety Features
 export const safetyFeatures = [
   "Adaptive Cruise Control",
@@ -60,3 +58,13 @@ export const entertainmentFeatures = [
   "USB-C Charging Ports",
   "Streaming Services Integration",
 ];
+
+// ✅ Default export for seeding
+export default {
+  safetyFeatures,
+  comfortFeatures,
+  techFeatures,
+  exteriorFeatures,
+  interiorFeatures,
+  entertainmentFeatures,
+};

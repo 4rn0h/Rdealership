@@ -1,4 +1,4 @@
-// src/data/Inquiry_Data.jsx
+// src/data/Inquiry_Data.js
 
 const mockInquiries = [
   {
@@ -123,3 +123,11 @@ const mockStats = {
 };
 
 export { mockInquiries, mockTestDrives, mockCommunications, mockStats };
+
+// ✅ Default export for seeding
+export default {
+  mockInquiries,
+  mockTestDrives,
+  mockCommunications,
+  mockStats,
+};

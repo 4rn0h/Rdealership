@@ -1,6 +1,6 @@
 import React from "react";
 import VehicleCard from "../../vehicle-browse-search/components/VehicleCard";
-import vehiclesData from "../../../data/Vehicles_Data.jsx"; //shared mock data
+import vehiclesData from "../../../data/Vehicles_Data.js"; //shared mock data
 
 export default function FeaturedCars() {
   // Example: grab first 3 "Available" vehicles

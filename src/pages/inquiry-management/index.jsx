@@ -1,22 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Header from '../../components/ui/Header';
-import Icon from '../../components/AppIcon';
-import Button from '../../components/ui/Button';
-import InquiryCard from './components/InquiryCard';
-import TestDriveCard from './components/TestDriveCard';
-import CommunicationHistory from './components/CommunicationHistory';
-import InquiryStats from './components/InquiryStats';
-import QuickActions from './components/QuickActions';
+// src/pages/inquiry-management/index.jsx
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Header from "../../components/ui/Header";
+import Icon from "../../components/AppIcon";
+import Button from "../../components/ui/Button";
+import InquiryCard from "./components/InquiryCard";
+import TestDriveCard from "./components/TestDriveCard";
+import CommunicationHistory from "./components/CommunicationHistory";
+import InquiryStats from "./components/InquiryStats";
+import QuickActions from "./components/QuickActions";
+import { supabase } from "../../lib/supabaseClient";
 
 // ✅ import mock data
-import { mockInquiries, mockTestDrives, mockCommunications, mockStats } from '../../data/Inquiry_Data';
-import vehiclesData from '../../data/Vehicles_Data';
+import {
+  mockInquiries,
+  mockTestDrives,
+  mockCommunications,
+  mockStats,
+} from "../../data/Inquiry_Data";
+import vehiclesData from "../../data/Vehicles_Data";
 
 const InquiryManagement = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('inquiries');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [activeTab, setActiveTab] = useState("inquiries");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [inquiries, setInquiries] = useState([]);
   const [testDrives, setTestDrives] = useState([]);
   const [communications, setCommunications] = useState([]);
@@ -24,22 +31,71 @@ const InquiryManagement = () => {
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
 
-  // Load mock data
+  // ✅ Role guard
   useEffect(() => {
-    // Join vehicle details by vehicleId
-    const enrichedInquiries = mockInquiries.map(inq => ({
+    const checkRole = async () => {
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        console.log("🔍 Supabase session:", session);
+
+        if (!session?.user?.id) {
+          console.error("No user id in session");
+          navigate("/user-authentication");
+          return;
+        }
+
+        const { data: profile, error } = await supabase
+          .from("profiles")
+          .select("role, full_name")
+          .eq("id", session.user.id) // ✅ always defined now
+          .single();
+
+        if (error) {
+          console.error("❌ Failed to load profile:", error.message);
+          navigate("/user-dashboard"); // fallback
+          return;
+        }
+
+        console.log("✅ Loaded profile:", profile);
+
+        // ✅ Normalize roles
+        const normalizedRole =
+          profile?.role === "customer" ? "user" : profile?.role;
+
+        if (normalizedRole !== "sales_agent") {
+          console.warn("🚫 Unauthorized role:", normalizedRole);
+          navigate("/user-dashboard");
+          return;
+        }
+      } catch (err) {
+        console.error("Role check failed:", err);
+        navigate("/user-dashboard");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkRole();
+  }, [navigate]);
+
+  // ✅ Load mock data
+  useEffect(() => {
+    const enrichedInquiries = mockInquiries.map((inq) => ({
       ...inq,
-      vehicle: vehiclesData.find(v => v.id === inq.vehicleId),
+      vehicle: vehiclesData.find((v) => v.id === inq.vehicleId),
     }));
 
-    const enrichedTestDrives = mockTestDrives.map(td => ({
+    const enrichedTestDrives = mockTestDrives.map((td) => ({
       ...td,
-      vehicle: vehiclesData.find(v => v.id === td.vehicleId),
+      vehicle: vehiclesData.find((v) => v.id === td.vehicleId),
     }));
 
-    const enrichedCommunications = mockCommunications.map(comm => ({
+    const enrichedCommunications = mockCommunications.map((comm) => ({
       ...comm,
-      vehicle: vehiclesData.find(v => v.id === comm.vehicleId),
+      vehicle: vehiclesData.find((v) => v.id === comm.vehicleId),
     }));
 
     setInquiries(enrichedInquiries);
@@ -47,86 +103,100 @@ const InquiryManagement = () => {
     setCommunications(enrichedCommunications);
     setFilteredCommunications(enrichedCommunications);
     setStats(mockStats);
-    setLoading(false);
   }, []);
 
   const tabs = [
-    { id: 'inquiries', label: 'Active Inquiries', icon: 'MessageSquare', count: inquiries?.length },
-    { id: 'testdrives', label: 'Test Drives', icon: 'Calendar', count: testDrives?.length },
-    { id: 'history', label: 'Communication History', icon: 'History', count: communications?.length }
+    {
+      id: "inquiries",
+      label: "Active Inquiries",
+      icon: "MessageSquare",
+      count: inquiries?.length,
+    },
+    {
+      id: "testdrives",
+      label: "Test Drives",
+      icon: "Calendar",
+      count: testDrives?.length,
+    },
+    {
+      id: "history",
+      label: "Communication History",
+      icon: "History",
+      count: communications?.length,
+    },
   ];
 
   const statusFilters = [
-    { value: 'all', label: 'All Status' },
-    { value: 'pending', label: 'Pending' },
-    { value: 'responded', label: 'Responded' },
-    { value: 'scheduled', label: 'Scheduled' },
-    { value: 'closed', label: 'Closed' }
+    { value: "all", label: "All Status" },
+    { value: "pending", label: "Pending" },
+    { value: "responded", label: "Responded" },
+    { value: "scheduled", label: "Scheduled" },
+    { value: "closed", label: "Closed" },
   ];
 
   const getFilteredInquiries = () => {
-    if (statusFilter === 'all') return inquiries;
-    return inquiries?.filter(inquiry => inquiry?.status === statusFilter);
+    if (statusFilter === "all") return inquiries;
+    return inquiries?.filter((inquiry) => inquiry?.status === statusFilter);
   };
 
   const handleScheduleTestDrive = (inquiry) => {
-    console.log('Schedule test drive for:', inquiry);
-    // Mock implementation - would open scheduling modal
+    console.log("Schedule test drive for:", inquiry);
   };
 
   const handleSendFollowup = (inquiry) => {
-    console.log('Send follow-up for:', inquiry);
-    // Mock implementation - would open follow-up form
+    console.log("Send follow-up for:", inquiry);
   };
 
   const handleMarkResolved = (inquiry) => {
-    console.log('Mark resolved:', inquiry);
-    // Mock implementation - would update inquiry status
+    console.log("Mark resolved:", inquiry);
   };
 
   const handleViewDetails = (inquiry) => {
-    console.log('View details for:', inquiry);
-    // Mock implementation - would open detailed view
+    console.log("View details for:", inquiry);
   };
 
   const handleRescheduleTestDrive = (testDrive) => {
-    console.log('Reschedule test drive:', testDrive);
-    // Mock implementation - would open rescheduling modal
+    console.log("Reschedule test drive:", testDrive);
   };
 
   const handleCancelTestDrive = (testDrive) => {
-    console.log('Cancel test drive:', testDrive);
-    // Mock implementation - would cancel test drive
+    console.log("Cancel test drive:", testDrive);
   };
 
   const handleGetDirections = (testDrive) => {
     const { lat, lng } = testDrive?.location?.coordinates;
-    window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
+    window.open(
+      `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`,
+      "_blank"
+    );
   };
 
   const handleSearchCommunications = (searchTerm, type) => {
     let filtered = communications;
-    
-    if (type !== 'all') {
-      filtered = filtered?.filter(comm => comm?.type === type);
+
+    if (type !== "all") {
+      filtered = filtered?.filter((comm) => comm?.type === type);
     }
-    
+
     if (searchTerm) {
-      filtered = filtered?.filter(comm => 
-        comm?.subject?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
-        comm?.content?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
-        comm?.vehicle?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())
+      filtered = filtered?.filter(
+        (comm) =>
+          comm?.subject?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+          comm?.content?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+          comm?.vehicle?.name
+            ?.toLowerCase()
+            ?.includes(searchTerm?.toLowerCase())
       );
     }
-    
+
     setFilteredCommunications(filtered);
   };
 
   const handleQuickActions = {
-    onNewInquiry: () => navigate('/vehicle-browse-search'),
-    onScheduleTestDrive: () => setActiveTab('testdrives'),
-    onViewFavorites: () => navigate('/user-dashboard'),
-    onContactSupport: () => console.log('Contact support')
+    onNewInquiry: () => navigate("/vehicle-browse-search"),
+    onScheduleTestDrive: () => setActiveTab("testdrives"),
+    onViewFavorites: () => navigate("/user-dashboard"),
+    onContactSupport: () => console.log("Contact support"),
   };
 
   if (loading) {
@@ -135,8 +205,12 @@ const InquiryManagement = () => {
         <Header />
         <div className="pt-16 flex items-center justify-center min-h-screen">
           <div className="text-center">
-            <Icon name="Loader2" size={48} className="text-accent animate-spin mx-auto mb-4" />
-            <p className="text-muted-foreground">Loading your inquiries...</p>
+            <Icon
+              name="Loader2"
+              size={48}
+              className="text-accent animate-spin mx-auto mb-4"
+            />
+            <p className="text-muted-foreground">Checking access...</p>
           </div>
         </div>
       </div>
@@ -159,12 +233,12 @@ const InquiryManagement = () => {
                   Track your vehicle inquiries, test drives, and communications
                 </p>
               </div>
-              
+
               <Button
                 variant="default"
                 iconName="Plus"
                 iconPosition="left"
-                onClick={() => navigate('/vehicle-browse-search')}
+                onClick={() => navigate("/vehicle-browse-search")}
               >
                 New Inquiry
               </Button>
@@ -178,7 +252,7 @@ const InquiryManagement = () => {
 
           {/* Quick Actions */}
           <div className="mb-6 lg:mb-8">
-            <QuickActions 
+            <QuickActions
               onNewInquiry={handleQuickActions.onNewInquiry}
               onScheduleTestDrive={handleQuickActions.onScheduleTestDrive}
               onViewFavorites={handleQuickActions.onViewFavorites}
@@ -196,17 +270,20 @@ const InquiryManagement = () => {
                     onClick={() => setActiveTab(tab?.id)}
                     className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap luxury-micro-transition ${
                       activeTab === tab?.id
-                        ? 'border-accent text-accent' : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted'
+                        ? "border-accent text-accent"
+                        : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted"
                     }`}
                   >
                     <Icon name={tab?.icon} size={18} />
                     <span>{tab?.label}</span>
                     {tab?.count > 0 && (
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        activeTab === tab?.id
-                          ? 'bg-accent text-accent-foreground'
-                          : 'bg-muted text-muted-foreground'
-                      }`}>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          activeTab === tab?.id
+                            ? "bg-accent text-accent-foreground"
+                            : "bg-muted text-muted-foreground"
+                        }`}
+                      >
                         {tab?.count}
                       </span>
                     )}
@@ -218,7 +295,7 @@ const InquiryManagement = () => {
 
           {/* Tab Content */}
           <div className="space-y-6">
-            {activeTab === 'inquiries' && (
+            {activeTab === "inquiries" && (
               <>
                 {/* Status Filter */}
                 <div className="flex flex-wrap gap-2">
@@ -228,8 +305,8 @@ const InquiryManagement = () => {
                       onClick={() => setStatusFilter(filter?.value)}
                       className={`px-3 py-1 rounded-full text-sm font-medium luxury-micro-transition ${
                         statusFilter === filter?.value
-                          ? 'bg-accent text-accent-foreground'
-                          : 'bg-muted text-muted-foreground hover:bg-accent/10 hover:text-accent'
+                          ? "bg-accent text-accent-foreground"
+                          : "bg-muted text-muted-foreground hover:bg-accent/10 hover:text-accent"
                       }`}
                     >
                       {filter?.label}
@@ -241,16 +318,24 @@ const InquiryManagement = () => {
                 <div className="space-y-4">
                   {getFilteredInquiries()?.length === 0 ? (
                     <div className="bg-card border border-border rounded-lg p-8 text-center">
-                      <Icon name="MessageSquare" size={48} className="text-muted-foreground mx-auto mb-4" />
-                      <h3 className="font-semibold text-foreground mb-2">No Inquiries Found</h3>
+                      <Icon
+                        name="MessageSquare"
+                        size={48}
+                        className="text-muted-foreground mx-auto mb-4"
+                      />
+                      <h3 className="font-semibold text-foreground mb-2">
+                        No Inquiries Found
+                      </h3>
                       <p className="text-muted-foreground mb-4">
-                        {statusFilter === 'all' ? "You haven't made any vehicle inquiries yet." : `No inquiries with status "${statusFilter}" found.`}
+                        {statusFilter === "all"
+                          ? "You haven't made any vehicle inquiries yet."
+                          : `No inquiries with status "${statusFilter}" found.`}
                       </p>
                       <Button
                         variant="outline"
                         iconName="Plus"
                         iconPosition="left"
-                        onClick={() => navigate('/vehicle-browse-search')}
+                        onClick={() => navigate("/vehicle-browse-search")}
                       >
                         Browse Vehicles
                       </Button>
@@ -271,20 +356,27 @@ const InquiryManagement = () => {
               </>
             )}
 
-            {activeTab === 'testdrives' && (
+            {activeTab === "testdrives" && (
               <div className="space-y-4">
                 {testDrives?.length === 0 ? (
                   <div className="bg-card border border-border rounded-lg p-8 text-center">
-                    <Icon name="Calendar" size={48} className="text-muted-foreground mx-auto mb-4" />
-                    <h3 className="font-semibold text-foreground mb-2">No Test Drives Scheduled</h3>
+                    <Icon
+                      name="Calendar"
+                      size={48}
+                      className="text-muted-foreground mx-auto mb-4"
+                    />
+                    <h3 className="font-semibold text-foreground mb-2">
+                      No Test Drives Scheduled
+                    </h3>
                     <p className="text-muted-foreground mb-4">
-                      Schedule a test drive to experience our luxury vehicles firsthand.
+                      Schedule a test drive to experience our luxury vehicles
+                      firsthand.
                     </p>
                     <Button
                       variant="outline"
                       iconName="Calendar"
                       iconPosition="left"
-                      onClick={() => navigate('/vehicle-browse-search')}
+                      onClick={() => navigate("/vehicle-browse-search")}
                     >
                       Schedule Test Drive
                     </Button>
@@ -303,7 +395,7 @@ const InquiryManagement = () => {
               </div>
             )}
 
-            {activeTab === 'history' && (
+            {activeTab === "history" && (
               <CommunicationHistory
                 communications={filteredCommunications}
                 onSearch={handleSearchCommunications}
