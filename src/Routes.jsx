@@ -1,3 +1,4 @@
+// src/Routes.jsx
 import React from "react";
 import { BrowserRouter, Routes as RouterRoutes, Route } from "react-router-dom";
 
@@ -7,7 +8,6 @@ import NotFound from "pages/NotFound";
 
 // Layouts
 import PublicLayout from "layouts/PublicLayout";
-// import AuthLayout from "layouts/AuthLayout";
 
 // Pages
 import Home from "pages/home";
@@ -17,6 +17,7 @@ import UserAuthentication from "pages/user-authentication";
 import VehicleBrowseSearch from "pages/vehicle-browse-search";
 import InquiryManagement from "pages/inquiry-management";
 import AdminVehicleManagement from "pages/admin-vehicle-management";
+import AdminUserManagement from "pages/admin-user-management"; // ✅ NEW IMPORT
 import UserDashboard from "pages/user-dashboard";
 import VehicleDetail from "pages/vehicle-detail";
 import Terms from "pages/terms";
@@ -95,6 +96,14 @@ const Routes = () => {
             }
           />
           <Route
+            path="/admin-user-management" // ✅ NEW ROUTE
+            element={
+              <PublicLayout>
+                <AdminUserManagement />
+              </PublicLayout>
+            }
+          />
+          <Route
             path="/user-dashboard"
             element={
               <PublicLayout>
@@ -110,7 +119,7 @@ const Routes = () => {
               </PublicLayout>
             }
           />
-           <Route
+          <Route
             path="/user-authentication"
             element={
               <PublicLayout>

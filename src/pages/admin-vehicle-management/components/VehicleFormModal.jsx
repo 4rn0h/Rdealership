@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Icon from '../../../components/AppIcon';
 import Image from '../../../components/AppImage';
 import Button from '../../../components/ui/Button';
@@ -6,13 +6,10 @@ import Input from '../../../components/ui/Input';
 import Select from '../../../components/ui/Select';
 import { supabase, uploadVehicleImage } from '../../../lib/supabaseClient';
 
-const CHUNK_SIZE = 5; // for chunked inserts
-
 const VehicleFormModal = ({ isOpen, onClose, vehicle }) => {
-  const [formData, setFormData] = useState(vehicle || {
+  const [formData, setFormData] = useState({
     make: '',
     model: '',
-    variant: '',
     year: new Date()?.getFullYear(),
     price: '',
     mileage: '',
@@ -20,47 +17,55 @@ const VehicleFormModal = ({ isOpen, onClose, vehicle }) => {
     transmission: '',
     bodyType: '',
     color: '',
-    location: '',
     description: '',
     features: [],
-    images: [],
-    status: 'available'
+    image_urls: [],
+    status: 'available',
   });
 
   const [dragActive, setDragActive] = useState(false);
   const [uploadingImages, setUploadingImages] = useState(false);
-  const [imageProgress, setImageProgress] = useState({}); // per-file progress
+  const [imageProgress, setImageProgress] = useState({});
   const [saving, setSaving] = useState(false);
   const fileInputRef = useRef(null);
   const featureInputRef = useRef(null);
   const [newFeature, setNewFeature] = useState('');
 
+  // ---------- Populate form when editing ----------
+  useEffect(() => {
+    if (vehicle) {
+      setFormData({
+        make: vehicle.make || '',
+        model: vehicle.model || '',
+        year: vehicle.year || new Date()?.getFullYear(),
+        price: vehicle.price || '',
+        mileage: vehicle.mileage || '',
+        fuelType: vehicle.fuel_type || '',
+        transmission: vehicle.transmission || '',
+        bodyType: vehicle.body_type || '',
+        color: vehicle.color || '',
+        description: vehicle.description || '',
+        features: vehicle.features || [],
+        image_urls: vehicle.image_urls || [],
+        status: vehicle.status || 'available',
+      });
+    }
+  }, [vehicle]);
+
   if (!isOpen) return null;
 
-  // ---------- Select Options ----------
-  const makeOptions = [
-    { value: 'mercedes', label: 'Mercedes-Benz' },
-    { value: 'bmw', label: 'BMW' },
-    { value: 'audi', label: 'Audi' },
-    { value: 'lexus', label: 'Lexus' },
-    { value: 'porsche', label: 'Porsche' },
-    { value: 'jaguar', label: 'Jaguar' },
-    { value: 'landrover', label: 'Land Rover' },
-    { value: 'bentley', label: 'Bentley' },
-    { value: 'rollsroyce', label: 'Rolls-Royce' }
-  ];
-
+  // ---------- Options ----------
   const fuelTypeOptions = [
     { value: 'petrol', label: 'Petrol' },
     { value: 'diesel', label: 'Diesel' },
     { value: 'hybrid', label: 'Hybrid' },
-    { value: 'electric', label: 'Electric' }
+    { value: 'electric', label: 'Electric' },
   ];
 
   const transmissionOptions = [
     { value: 'automatic', label: 'Automatic' },
     { value: 'manual', label: 'Manual' },
-    { value: 'cvt', label: 'CVT' }
+    { value: 'cvt', label: 'CVT' },
   ];
 
   const bodyTypeOptions = [
@@ -69,33 +74,25 @@ const VehicleFormModal = ({ isOpen, onClose, vehicle }) => {
     { value: 'coupe', label: 'Coupe' },
     { value: 'convertible', label: 'Convertible' },
     { value: 'hatchback', label: 'Hatchback' },
-    { value: 'wagon', label: 'Wagon' }
-  ];
-
-  const locationOptions = [
-    { value: 'nairobi', label: 'Nairobi' },
-    { value: 'mombasa', label: 'Mombasa' },
-    { value: 'kisumu', label: 'Kisumu' },
-    { value: 'nakuru', label: 'Nakuru' },
-    { value: 'eldoret', label: 'Eldoret' }
+    { value: 'wagon', label: 'Wagon' },
   ];
 
   const statusOptions = [
     { value: 'available', label: 'Available' },
     { value: 'sold', label: 'Sold' },
-    { value: 'reserved', label: 'Reserved' }
+    { value: 'reserved', label: 'Reserved' },
   ];
 
   // ---------- Handlers ----------
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleDrag = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") setDragActive(true);
-    else if (e.type === "dragleave") setDragActive(false);
+    if (e.type === 'dragenter' || e.type === 'dragover') setDragActive(true);
+    else if (e.type === 'dragleave') setDragActive(false);
   };
 
   const handleDrop = (e) => {
@@ -108,7 +105,7 @@ const VehicleFormModal = ({ isOpen, onClose, vehicle }) => {
   const handleFiles = async (files) => {
     setUploadingImages(true);
     const newImages = [];
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
     const maxSize = 10 * 1024 * 1024;
 
     for (let file of files) {
@@ -122,7 +119,7 @@ const VehicleFormModal = ({ isOpen, onClose, vehicle }) => {
       }
       try {
         const url = await uploadVehicleImage(file, (percent) => {
-          setImageProgress(prev => ({ ...prev, [file.name]: percent }));
+          setImageProgress((prev) => ({ ...prev, [file.name]: percent }));
         });
         newImages.push(url);
       } catch (err) {
@@ -131,27 +128,36 @@ const VehicleFormModal = ({ isOpen, onClose, vehicle }) => {
       }
     }
 
-    setFormData(prev => ({ ...prev, images: [...prev.images, ...newImages] }));
+    setFormData((prev) => ({
+      ...prev,
+      image_urls: [...prev.image_urls, ...newImages],
+    }));
     setUploadingImages(false);
   };
 
   const removeImage = (index) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      images: prev.images.filter((_, i) => i !== index)
+      image_urls: prev.image_urls.filter((_, i) => i !== index),
     }));
   };
 
   const addFeature = () => {
     if (newFeature.trim() && !formData.features.includes(newFeature.trim())) {
-      setFormData(prev => ({ ...prev, features: [...prev.features, newFeature.trim()] }));
+      setFormData((prev) => ({
+        ...prev,
+        features: [...prev.features, newFeature.trim()],
+      }));
       setNewFeature('');
       featureInputRef.current?.focus();
     }
   };
 
   const removeFeature = (feature) => {
-    setFormData(prev => ({ ...prev, features: prev.features.filter(f => f !== feature) }));
+    setFormData((prev) => ({
+      ...prev,
+      features: prev.features.filter((f) => f !== feature),
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -159,14 +165,16 @@ const VehicleFormModal = ({ isOpen, onClose, vehicle }) => {
     setSaving(true);
 
     try {
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
       if (userError) throw userError;
-      if (!user) throw new Error("You must be logged in to add vehicles");
+      if (!user) throw new Error('You must be logged in to add vehicles');
 
       const payload = {
         make: formData.make,
         model: formData.model,
-        variant: formData.variant,
         year: formData.year,
         price: formData.price,
         mileage: formData.mileage,
@@ -176,49 +184,27 @@ const VehicleFormModal = ({ isOpen, onClose, vehicle }) => {
         color: formData.color,
         description: formData.description,
         status: formData.status,
-        location: formData.location,
+        features: formData.features,
+        image_urls: formData.image_urls,
         created_by: user.id,
       };
 
-      let vehicleId;
       if (vehicle?.id) {
-        const { data, error } = await supabase
-          .from("vehicles")
+        const { error } = await supabase
+          .from('vehicles')
           .update({ ...payload, updated_at: new Date().toISOString() })
-          .eq("id", vehicle.id)
-          .select();
+          .eq('id', vehicle.id);
         if (error) throw error;
-        vehicleId = vehicle.id;
       } else {
-        const { data, error } = await supabase
-          .from("vehicles")
-          .insert([payload])
-          .select();
+        const { error } = await supabase.from('vehicles').insert([payload]);
         if (error) throw error;
-        vehicleId = data[0].id;
       }
 
-      // ---------- Chunked inserts for images ----------
-      for (let i = 0; i < formData.images.length; i += CHUNK_SIZE) {
-        const chunk = formData.images.slice(i, i + CHUNK_SIZE);
-        await supabase.from('vehicle_images').insert(
-          chunk.map(url => ({ vehicle_id: vehicleId, url }))
-        );
-      }
-
-      // ---------- Chunked inserts for features ----------
-      for (let i = 0; i < formData.features.length; i += CHUNK_SIZE) {
-        const chunk = formData.features.slice(i, i + CHUNK_SIZE);
-        await supabase.from('vehicle_features').insert(
-          chunk.map(feature => ({ vehicle_id: vehicleId, feature }))
-        );
-      }
-
-      alert(`✅ Vehicle ${vehicle ? "updated" : "added"} successfully!`);
+      alert(`✅ Vehicle ${vehicle ? 'updated' : 'added'} successfully!`);
       onClose();
     } catch (err) {
       console.error(err);
-      alert("❌ Error saving vehicle: " + err.message);
+      alert('❌ Error saving vehicle: ' + err.message);
     } finally {
       setSaving(false);
     }
@@ -237,22 +223,33 @@ const VehicleFormModal = ({ isOpen, onClose, vehicle }) => {
 
         <div className="overflow-y-auto max-h-[calc(90vh-140px)]">
           <form onSubmit={handleSubmit} className="p-6 space-y-6">
-
             {/* Image Upload */}
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">Vehicle Images</label>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Vehicle Images
+              </label>
               <div
                 className={`border-2 border-dashed rounded-lg p-8 text-center luxury-micro-transition ${
-                  dragActive ? 'border-accent bg-accent/5' : 'border-border hover:border-accent/50'
+                  dragActive
+                    ? 'border-accent bg-accent/5'
+                    : 'border-border hover:border-accent/50'
                 }`}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
                 onDragOver={handleDrag}
                 onDrop={handleDrop}
               >
-                <Icon name="Upload" size={48} className="mx-auto mb-4 text-muted-foreground" />
-                <p className="text-foreground font-medium mb-2">Drag and drop images here, or click to select</p>
-                <p className="text-sm text-muted-foreground mb-4">JPG, PNG, WebP up to 10MB</p>
+                <Icon
+                  name="Upload"
+                  size={48}
+                  className="mx-auto mb-4 text-muted-foreground"
+                />
+                <p className="text-foreground font-medium mb-2">
+                  Drag and drop images here, or click to select
+                </p>
+                <p className="text-sm text-muted-foreground mb-4">
+                  JPG, PNG, WebP up to 10MB
+                </p>
                 <Button
                   type="button"
                   variant="outline"
@@ -273,12 +270,16 @@ const VehicleFormModal = ({ isOpen, onClose, vehicle }) => {
                 />
               </div>
 
-              {formData.images.length > 0 && (
+              {formData.image_urls.length > 0 && (
                 <div className="grid grid-cols-4 gap-4 mt-4">
-                  {formData.images.map((image, index) => (
+                  {formData.image_urls.map((image, index) => (
                     <div key={index} className="relative group">
                       <div className="aspect-video rounded-lg overflow-hidden bg-muted">
-                        <Image src={image} alt={`Vehicle ${index + 1}`} className="w-full h-full object-cover" />
+                        <Image
+                          src={image}
+                          alt={`Vehicle ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                       {imageProgress[image] && (
                         <div className="absolute bottom-0 left-0 w-full bg-muted-foreground h-1">
@@ -309,7 +310,9 @@ const VehicleFormModal = ({ isOpen, onClose, vehicle }) => {
 
             {/* Features Input */}
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">Features</label>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Features
+              </label>
               <div className="flex space-x-2 mb-2">
                 <Input
                   ref={featureInputRef}
@@ -317,15 +320,28 @@ const VehicleFormModal = ({ isOpen, onClose, vehicle }) => {
                   placeholder="Add a feature"
                   value={newFeature}
                   onChange={(e) => setNewFeature(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())}
+                  onKeyDown={(e) =>
+                    e.key === 'Enter' && (e.preventDefault(), addFeature())
+                  }
                 />
-                <Button type="button" size="sm" onClick={addFeature}>Add</Button>
+                <Button type="button" size="sm" onClick={addFeature}>
+                  Add
+                </Button>
               </div>
               <div className="flex flex-wrap gap-2">
                 {formData.features.map((f, i) => (
-                  <div key={i} className="bg-muted px-2 py-1 rounded flex items-center space-x-1">
+                  <div
+                    key={i}
+                    className="bg-muted px-2 py-1 rounded flex items-center space-x-1"
+                  >
                     <span>{f}</span>
-                    <Button type="button" size="xs" variant="destructive" onClick={() => removeFeature(f)} iconName="X" />
+                    <Button
+                      type="button"
+                      size="xs"
+                      variant="destructive"
+                      onClick={() => removeFeature(f)}
+                      iconName="X"
+                    />
                   </div>
                 ))}
               </div>
@@ -333,35 +349,106 @@ const VehicleFormModal = ({ isOpen, onClose, vehicle }) => {
 
             {/* Basic Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Select label="Make" required options={makeOptions} value={formData.make} onChange={(v) => handleInputChange('make', v)} />
-              <Input label="Model" type="text" required value={formData.model} onChange={(e) => handleInputChange('model', e.target.value)} />
-              <Input label="Variant" type="text" value={formData.variant} onChange={(e) => handleInputChange('variant', e.target.value)} />
-              <Input label="Year" type="number" required min="1990" max={new Date()?.getFullYear() + 1} value={formData.year} onChange={(e) => handleInputChange('year', parseInt(e.target.value))} />
-              <Input label="Price (KES)" type="number" required min="0" value={formData.price} onChange={(e) => handleInputChange('price', parseFloat(e.target.value))} />
-              <Input label="Mileage (km)" type="number" min="0" value={formData.mileage} onChange={(e) => handleInputChange('mileage', parseInt(e.target.value))} />
+              <Input
+                label="Make"
+                type="text"
+                required
+                value={formData.make}
+                onChange={(e) => handleInputChange('make', e.target.value)}
+              />
+              <Input
+                label="Model"
+                type="text"
+                required
+                value={formData.model}
+                onChange={(e) => handleInputChange('model', e.target.value)}
+              />
+              <Input
+                label="Year"
+                type="number"
+                required
+                min="1990"
+                max={new Date()?.getFullYear() + 1}
+                value={formData.year}
+                onChange={(e) =>
+                  handleInputChange('year', parseInt(e.target.value))
+                }
+              />
+              <Input
+                label="Price (KES)"
+                type="number"
+                required
+                min="0"
+                value={formData.price}
+                onChange={(e) =>
+                  handleInputChange('price', parseFloat(e.target.value))
+                }
+              />
+              <Input
+                label="Mileage (km)"
+                type="number"
+                min="0"
+                value={formData.mileage}
+                onChange={(e) =>
+                  handleInputChange('mileage', parseInt(e.target.value))
+                }
+              />
             </div>
 
             {/* Technical Specifications */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Select label="Fuel Type" required options={fuelTypeOptions} value={formData.fuelType} onChange={(v) => handleInputChange('fuelType', v)} />
-              <Select label="Transmission" required options={transmissionOptions} value={formData.transmission} onChange={(v) => handleInputChange('transmission', v)} />
-              <Select label="Body Type" required options={bodyTypeOptions} value={formData.bodyType} onChange={(v) => handleInputChange('bodyType', v)} />
-              <Input label="Color" type="text" required value={formData.color} onChange={(e) => handleInputChange('color', e.target.value)} />
+              <Select
+                label="Fuel Type"
+                required
+                options={fuelTypeOptions}
+                value={formData.fuelType}
+                onChange={(v) => handleInputChange('fuelType', v)}
+              />
+              <Select
+                label="Transmission"
+                required
+                options={transmissionOptions}
+                value={formData.transmission}
+                onChange={(v) => handleInputChange('transmission', v)}
+              />
+              <Select
+                label="Body Type"
+                required
+                options={bodyTypeOptions}
+                value={formData.bodyType}
+                onChange={(v) => handleInputChange('bodyType', v)}
+              />
+              <Input
+                label="Color"
+                type="text"
+                required
+                value={formData.color}
+                onChange={(e) => handleInputChange('color', e.target.value)}
+              />
             </div>
 
-            {/* Location & Status */}
+            {/* Status */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Select label="Location" required options={locationOptions} value={formData.location} onChange={(v) => handleInputChange('location', v)} />
-              <Select label="Status" required options={statusOptions} value={formData.status} onChange={(v) => handleInputChange('status', v)} />
+              <Select
+                label="Status"
+                required
+                options={statusOptions}
+                value={formData.status}
+                onChange={(v) => handleInputChange('status', v)}
+              />
             </div>
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">Description</label>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Description
+              </label>
               <textarea
                 rows={4}
                 value={formData.description}
-                onChange={(e) => handleInputChange('description', e.target.value)}
+                onChange={(e) =>
+                  handleInputChange('description', e.target.value)
+                }
                 placeholder="Detailed description..."
                 className="w-full px-3 py-2 border border-border rounded-lg bg-input text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
               />
@@ -369,8 +456,15 @@ const VehicleFormModal = ({ isOpen, onClose, vehicle }) => {
 
             {/* Actions */}
             <div className="flex items-center justify-end space-x-4 pt-6 border-t border-border">
-              <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>
-              <Button type="submit" iconName="Save" iconPosition="left" loading={saving}>
+              <Button type="button" variant="ghost" onClick={onClose}>
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                iconName="Save"
+                iconPosition="left"
+                loading={saving}
+              >
                 {vehicle ? 'Update Vehicle' : 'Add Vehicle'}
               </Button>
             </div>
