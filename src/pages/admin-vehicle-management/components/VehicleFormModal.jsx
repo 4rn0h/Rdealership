@@ -6,7 +6,7 @@ import Input from '../../../components/ui/Input';
 import Select from '../../../components/ui/Select';
 import { supabase, uploadVehicleImage } from '../../../lib/supabaseClient';
 
-const VehicleFormModal = ({ isOpen, onClose, vehicle }) => {
+const VehicleFormModal = ({ isOpen, onClose, vehicle, onVehicleSaved }) => {
   const [formData, setFormData] = useState({
     make: '',
     model: '',
@@ -189,18 +189,31 @@ const VehicleFormModal = ({ isOpen, onClose, vehicle }) => {
         created_by: user.id,
       };
 
+      let savedVehicle;
       if (vehicle?.id) {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('vehicles')
           .update({ ...payload, updated_at: new Date().toISOString() })
-          .eq('id', vehicle.id);
+          .eq('id', vehicle.id)
+          .select()
+          .single();
         if (error) throw error;
+        savedVehicle = data;
       } else {
-        const { error } = await supabase.from('vehicles').insert([payload]);
+        const { data, error } = await supabase
+          .from('vehicles')
+          .insert([payload])
+          .select()
+          .single();
         if (error) throw error;
+        savedVehicle = data;
       }
 
       alert(`✅ Vehicle ${vehicle ? 'updated' : 'added'} successfully!`);
+
+      // 👇 notify parent
+      if (onVehicleSaved) onVehicleSaved(savedVehicle);
+
       onClose();
     } catch (err) {
       console.error(err);
