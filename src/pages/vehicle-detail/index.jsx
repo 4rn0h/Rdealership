@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import Header from '../../components/ui/Header';
+import { supabase } from '../../lib/supabaseClient';
 import Icon from '../../components/AppIcon';
 
 // Components
@@ -32,7 +33,46 @@ const VehicleDetail = () => {
       await new Promise(resolve => setTimeout(resolve, 500));
 
       // ✅ Find vehicle in Vehicles_Data
-      const foundVehicle = vehiclesData.find(v => String(v.id) === String(vehicleId));
+      let foundVehicle = vehiclesData.find(v => String(v.id) === String(vehicleId));
+
+      // If not found in local dataset, try fetching from Supabase (fallback)
+      if (!foundVehicle && vehicleId) {
+        try {
+          const { data, error } = await supabase
+            .from('vehicles')
+            .select('*')
+            .eq('id', vehicleId)
+            .single();
+
+          if (!error && data) {
+            console.log('ℹ️ VehicleDetail: loaded from Supabase', data.id);
+            // Normalize fields to match local structure
+            const imageUrls = data.image_urls || data.images || (data.image_url ? [data.image_url] : []);
+            foundVehicle = {
+              id: data.id,
+              make: data.make,
+              model: data.model,
+              year: data.year,
+              price: data.price,
+              mileage: data.mileage,
+              exteriorColor: data.exterior_color || data.exteriorColor,
+              interiorColor: data.interior_color || data.interiorColor,
+              fuelType: data.fuel_type || data.fuelType,
+              transmission: data.transmission,
+              engineSize: data.engine_size || data.engineSize,
+              bodyType: data.body_type || data.bodyType,
+              location: data.location,
+              description: data.description,
+              features: data.features || [],
+              images: imageUrls,
+              status: data.status || 'Available',
+              listedDate: data.created_at || data.listedDate,
+            };
+          }
+        } catch (err) {
+          console.error('Error fetching vehicle from Supabase:', err?.message || err);
+        }
+      }
 
       setVehicle(foundVehicle || null);
       setLoading(false);
@@ -45,8 +85,8 @@ const VehicleDetail = () => {
     setIsAuthenticated(!!user);
 
     // Favorites check
-    const favorites = JSON.parse(localStorage.getItem('RoyaMotorsUk_favorites') || '[]');
-    setIsFavorite(favorites?.includes(vehicleId));
+    const favorites = JSON.parse(localStorage.getItem('RoyaMotorsUk_favorites') || '[]').map(String);
+    setIsFavorite(favorites?.includes(String(vehicleId)));
 
     // Track view history
     const viewHistory = JSON.parse(localStorage.getItem('RoyaMotorsUk_view_history') || '[]');
@@ -60,17 +100,18 @@ const VehicleDetail = () => {
       return;
     }
 
-    const favorites = JSON.parse(localStorage.getItem('RoyaMotorsUk_favorites') || '[]');
+    const favorites = JSON.parse(localStorage.getItem('RoyaMotorsUk_favorites') || '[]').map(String);
+    const idStr = String(vehicleId);
     let updatedFavorites;
 
-    if (isFavorite) {
-      updatedFavorites = favorites.filter(id => id !== vehicleId);
+    if (favorites.includes(idStr)) {
+      updatedFavorites = favorites.filter(id => id !== idStr);
     } else {
-      updatedFavorites = [...favorites, vehicleId];
+      updatedFavorites = [...favorites, idStr];
     }
 
     localStorage.setItem('RoyaMotorsUk_favorites', JSON.stringify(updatedFavorites));
-    setIsFavorite(!isFavorite);
+    setIsFavorite(!favorites.includes(idStr));
   };
 
   // Breadcrumb
